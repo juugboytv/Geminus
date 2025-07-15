@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOBA Game Launcher</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            text-align: center;
+        }
+        .launcher {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #3498db;
+        }
+        .big-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            padding: 20px 40px;
+            font-size: 24px;
+            text-decoration: none;
+            border-radius: 10px;
+            margin: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .big-button:hover {
+            background: linear-gradient(45deg, #2980b9, #3498db);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        .instructions {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        .url-box {
+            background: #2c3e50;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            border: 1px solid #34495e;
+        }
+    </style>
+</head>
+<body>
+    <div class="launcher">
+        <h1>🎮 MOBA Battle Scene Launcher</h1>
+        <p>Your MOBA game is ready to play!</p>
+        
+        <button class="big-button" onclick="openGame()">🚀 LAUNCH GAME</button>
+        
+        <div class="instructions">
+            <h3>📋 Alternative Ways to Open:</h3>
+            
+            <p><strong>Method 1 - Local Server:</strong></p>
+            <div class="url-box">http://localhost:8000</div>
+            
+            <p><strong>Method 2 - Alternative Server:</strong></p>
+            <div class="url-box">http://127.0.0.1:8000</div>
+            
+            <p><strong>Method 3 - Direct File:</strong></p>
+            <div class="url-box">file:///workspace/index.html</div>
+            
+            <p><strong>Method 4 - Manual:</strong></p>
+            <p>Navigate to your workspace folder and double-click <code>index.html</code></p>
+        </div>
+        
+        <div class="instructions">
+            <h3>🎯 Game Controls:</h3>
+            <p>• Click to move your champion (blue circle with gold border)</p>
+            <p>• Click red enemies to target them</p>
+            <p>• Press Q/W/E/R to cast abilities</p>
+            <p>• Watch the minimap for enemy positions</p>
+        </div>
+    </div>
+
+    <script>
+        function openGame() {
+            // Try multiple methods to open the game
+            const urls = [
+                'http://localhost:8000',
+                'http://127.0.0.1:8000',
+                './index.html',
+                'index.html'
+            ];
+            
+            let opened = false;
+            
+            for (let url of urls) {
+                try {
+                    window.open(url, '_blank');
+                    opened = true;
+                    break;
+                } catch (e) {
+                    console.log('Failed to open:', url);
+                }
+            }
+            
+            if (!opened) {
+                alert('Please try manually opening one of the URLs listed above!');
+            }
+        }
+        
+        // Auto-redirect after 3 seconds
+        setTimeout(() => {
+            if (confirm('Ready to launch the MOBA game?')) {
+                openGame();
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
