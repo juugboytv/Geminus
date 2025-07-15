@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOBA Battle Scene - Gemini Canvas</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <div class="team-info blue-team">
+                <h3>Blue Team</h3>
+                <div class="score">Kills: <span id="blue-kills">12</span></div>
+                <div class="towers">Towers: <span id="blue-towers">7</span></div>
+            </div>
+            <div class="game-timer">
+                <h2>Match Time: <span id="timer">23:45</span></h2>
+                <div class="objective-status">Dragon spawns in: <span id="dragon-timer">2:15</span></div>
+            </div>
+            <div class="team-info red-team">
+                <h3>Red Team</h3>
+                <div class="score">Kills: <span id="red-kills">9</span></div>
+                <div class="towers">Towers: <span id="red-towers">6</span></div>
+            </div>
+        </div>
+        
+        <div class="minimap">
+            <canvas id="minimap-canvas" width="200" height="150"></canvas>
+            <div class="minimap-label">Minimap</div>
+        </div>
+        
+        <canvas id="game-canvas" width="1200" height="800"></canvas>
+        
+        <div class="ability-bar">
+            <div class="champion-portrait">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiMzNDk4ZGIiIHN0cm9rZT0iIzIxNzBhNSIgc3Ryb2tlLXdpZHRoPSI0Ii8+CjxwYXRoIGQ9Ik0yMCAyOGg4djhoLTh6IiBmaWxsPSIjZmZmIi8+CjxwYXRoIGQ9Ik0zNiAyOGg4djhoLTh6IiBmaWxsPSIjZmZmIi8+CjxwYXRoIGQ9Ik0yNCA0NGgxNnY0SDI0eiIgZmlsbD0iI2ZmZiIvPgo8L3N2Zz4=" alt="Champion" class="champion-avatar">
+                <div class="champion-level">18</div>
+            </div>
+            <div class="abilities">
+                <div class="ability-slot" data-ability="Q">
+                    <div class="ability-icon q-ability">Q</div>
+                    <div class="cooldown-overlay"></div>
+                    <div class="ability-key">Q</div>
+                </div>
+                <div class="ability-slot" data-ability="W">
+                    <div class="ability-icon w-ability">W</div>
+                    <div class="cooldown-overlay"></div>
+                    <div class="ability-key">W</div>
+                </div>
+                <div class="ability-slot" data-ability="E">
+                    <div class="ability-icon e-ability">E</div>
+                    <div class="cooldown-overlay"></div>
+                    <div class="ability-key">E</div>
+                </div>
+                <div class="ability-slot" data-ability="R">
+                    <div class="ability-icon r-ability">R</div>
+                    <div class="cooldown-overlay"></div>
+                    <div class="ability-key">R</div>
+                </div>
+            </div>
+            <div class="health-mana">
+                <div class="health-bar">
+                    <div class="health-fill" style="width: 75%"></div>
+                    <span class="health-text">1875/2500</span>
+                </div>
+                <div class="mana-bar">
+                    <div class="mana-fill" style="width: 60%"></div>
+                    <span class="mana-text">420/700</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-panel">
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-message system">Game started! Good luck, have fun!</div>
+                <div class="chat-message ally">ADC: Going for dragon at 25 min</div>
+                <div class="chat-message enemy">An enemy has been slain!</div>
+                <div class="chat-message ally">Jungler: Baron in 3 minutes</div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
