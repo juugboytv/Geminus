@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MOBA Battle Scene - Mobile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            touch-action: manipulation;
+        }
+
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Mobile Header */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 10px;
+            background: linear-gradient(90deg, #0f3460 0%, #16213e 50%, #0f3460 100%);
+            border-bottom: 2px solid #3498db;
+            font-size: 0.8em;
+            height: 60px;
+        }
+
+        .team-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 80px;
+        }
+
+        .blue-team { color: #3498db; }
+        .red-team { color: #e74c3c; }
+
+        .team-info h3 {
+            font-size: 0.9em;
+            margin-bottom: 2px;
+        }
+
+        .score, .towers {
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+
+        .game-timer {
+            text-align: center;
+        }
+
+        .game-timer h2 {
+            font-size: 1.1em;
+            color: #f39c12;
+            margin-bottom: 2px;
+        }
+
+        .objective-status {
+            font-size: 0.6em;
+            color: #9b59b6;
+        }
+
+        /* Mobile Minimap */
+        .minimap {
+            position: absolute;
+            top: 65px;
+            right: 5px;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            padding: 4px;
+        }
+
+        #minimap-canvas {
+            width: 120px;
+            height: 90px;
+            border-radius: 2px;
+            background: #2c3e50;
+        }
+
+        .minimap-label {
+            text-align: center;
+            font-size: 0.6em;
+            color: #bdc3c7;
+            margin-top: 2px;
+        }
+
+        /* Mobile Game Canvas */
+        #game-canvas {
+            flex: 1;
+            background: linear-gradient(45deg, #1a252f 0%, #2c3e50 100%);
+            border: 2px solid #34495e;
+            margin: 5px;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.2);
+            touch-action: none;
+        }
+
+        /* Mobile Ability Bar */
+        .ability-bar {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            background: linear-gradient(90deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+            border-top: 2px solid #3498db;
+            gap: 8px;
+            height: 80px;
+        }
+
+        .champion-portrait {
+            position: relative;
+            width: 48px;
+            height: 48px;
+        }
+
+        .champion-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid #f39c12;
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+        }
+
+        .champion-level {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            background: #f39c12;
+            color: #000;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6em;
+            font-weight: bold;
+            border: 1px solid #fff;
+        }
+
+        .abilities {
+            display: flex;
+            gap: 4px;
+        }
+
+        .ability-slot {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #7f8c8d;
+            border-radius: 6px;
+            background: #34495e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            touch-action: manipulation;
+        }
+
+        .ability-slot:active {
+            border-color: #3498db;
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+            transform: scale(0.95);
+        }
+
+        .ability-icon {
+            font-weight: bold;
+            font-size: 1em;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .q-ability { color: #e74c3c; }
+        .w-ability { color: #f39c12; }
+        .e-ability { color: #2ecc71; }
+        .r-ability { color: #9b59b6; }
+
+        .ability-key {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            background: #2c3e50;
+            color: #ecf0f1;
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            font-size: 0.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #7f8c8d;
+        }
+
+        .cooldown-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Mobile Health and Mana Bars */
+        .health-mana {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .health-bar, .mana-bar {
+            position: relative;
+            height: 16px;
+            background: #2c3e50;
+            border: 1px solid #7f8c8d;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .health-fill, .mana-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3);
+        }
+
+        .health-fill {
+            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .mana-fill {
+            background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .health-text, .mana-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.6em;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+        }
+
+        /* Mobile Chat Panel */
+        .chat-panel {
+            position: absolute;
+            bottom: 85px;
+            left: 5px;
+            width: 200px;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #7f8c8d;
+            border-radius: 4px;
+            overflow: hidden;
+            font-size: 0.7em;
+        }
+
+        .chat-messages {
+            height: 100%;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .chat-message {
+            margin-bottom: 2px;
+            font-size: 0.7em;
+            padding: 1px 2px;
+            border-radius: 2px;
+        }
+
+        .chat-message.system { color: #f39c12; font-style: italic; }
+        .chat-message.ally { color: #2ecc71; }
+        .chat-message.enemy { color: #e74c3c; }
+
+        /* Mobile Instructions */
+        .mobile-instructions {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #3498db;
+            text-align: center;
+            z-index: 1000;
+            max-width: 90vw;
+        }
+
+        .mobile-instructions.hidden {
+            display: none;
+        }
+
+        .close-instructions {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(52, 152, 219, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+        }
+
+        .ability-slot.ready {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-instructions" id="instructions">
+        <h3>📱 Mobile MOBA Controls</h3>
+        <p><strong>Movement:</strong> Tap anywhere to move</p>
+        <p><strong>Target:</strong> Tap red enemies to attack</p>
+        <p><strong>Abilities:</strong> Tap Q/W/E/R buttons</p>
+        <p><strong>Q:</strong> Fireball | <strong>W:</strong> Shield</p>
+        <p><strong>E:</strong> Dash | <strong>R:</strong> Ultimate</p>
+        <button class="close-instructions" onclick="closeInstructions()">Start Playing!</button>
+    </div>
+
+    <div class="game-container">
+        <div class="game-header">
+            <div class="team-info blue-team">
+                <h3>Blue</h3>
+                <div class="score">K: <span id="blue-kills">12</span></div>
+                <div class="towers">T: <span id="blue-towers">7</span></div>
+            </div>
+            <div class="game-timer">
+                <h2><span id="timer">23:45</span></h2>
+                <div class="objective-status">Dragon: <span id="dragon-timer">2:15</span></div>
+            </div>
+            <div class="team-info red-team">
+                <h3>Red</h3>
+                <div class="score">K: <span id="red-kills">9</span></div>
+                <div class="towers">T: <span id="red-towers">6</span></div>
+            </div>
+        </div>
+        
+        <div class="minimap">
+            <canvas id="minimap-canvas" width="120" height="90"></canvas>
+            <div class="minimap-label">Map</div>
+        </div>
+        
+        <canvas id="game-canvas" width="800" height="600"></canvas>
+        
+        <div class="ability-bar">
+            <div class="champion-portrait">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjIiIGZpbGw9IiMzNDk4ZGIiIHN0cm9rZT0iIzIxNzBhNSIgc3Ryb2tlLXdpZHRoPSI0Ii8+CjxwYXRoIGQ9Ik0xNiAyMGg2djZoLTZ6IiBmaWxsPSIjZmZmIi8+CjxwYXRoIGQ9Ik0yNiAyMGg2djZoLTZ6IiBmaWxsPSIjZmZmIi8+CjxwYXRoIGQ9Ik0xOCAzMmgxMnYzSDE4eiIgZmlsbD0iI2ZmZiIvPgo8L3N2Zz4=" alt="Champion" class="champion-avatar">
+                <div class="champion-level">18</div>
+            </div>
+            <div class="abilities">
+                <div class="ability-slot" data-ability="Q" ontouchstart="castAbilityTouch('Q')">
+                    <div class="ability-icon q-ability">Q</div>
+                    <div class="cooldown-overlay"></div>
+                    <div class="ability-key">Q</div>
+                </div>
+                <div class="ability-slot" data-ability="W" ontouchstart="castAbilityTouch('W')">
+                    <div class="ability-icon w-ability">W</div>
+                    <div class="cooldown-overlay"></div>
+                    <div class="ability-key">W</div>
+                </div>
+                <div class="ability-slot" data-ability="E" ontouchstart="castAbilityTouch('E')">
+                    <div class="ability-icon e-ability">E</div>
+                    <div class="cooldown-overlay"></div>
+                    <div class="ability-key">E</div>
+                </div>
+                <div class="ability-slot" data-ability="R" ontouchstart="castAbilityTouch('R')">
+                    <div class="ability-icon r-ability">R</div>
+                    <div class="cooldown-overlay"></div>
+                    <div class="ability-key">R</div>
+                </div>
+            </div>
+            <div class="health-mana">
+                <div class="health-bar">
+                    <div class="health-fill" style="width: 75%"></div>
+                    <span class="health-text">1875/2500</span>
+                </div>
+                <div class="mana-bar">
+                    <div class="mana-fill" style="width: 60%"></div>
+                    <span class="mana-text">420/700</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-panel">
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-message system">Mobile game ready!</div>
+                <div class="chat-message ally">Tap to move and attack</div>
+                <div class="chat-message system">Use ability buttons below</div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+    <script>
+        // Mobile-specific enhancements
+        function closeInstructions() {
+            document.getElementById('instructions').classList.add('hidden');
+        }
+        
+        function castAbilityTouch(ability) {
+            if (window.game) {
+                window.game.castAbility(ability);
+            }
+        }
+        
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Enhance touch events for canvas
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('game-canvas');
+            if (canvas) {
+                // Convert touch events to mouse events for compatibility
+                canvas.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const mouseEvent = new MouseEvent('click', {
+                        clientX: touch.clientX,
+                        clientY: touch.clientY
+                    });
+                    canvas.dispatchEvent(mouseEvent);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
