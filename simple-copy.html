@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copy MOBA Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+            text-align: center;
+        }
+        
+        .big-button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 30px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 15px;
+            width: 90%;
+            margin: 20px auto;
+            display: block;
+            cursor: pointer;
+        }
+        
+        .big-button:active {
+            background: #c0392b;
+            transform: scale(0.95);
+        }
+        
+        .message {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .success {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .error {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .code-area {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 MOBA Game for Gemini Canvas</h1>
+    
+    <p><strong>Instructions:</strong></p>
+    <p>1. Tap the button below</p>
+    <p>2. Open Gemini Canvas</p>
+    <p>3. Paste the code</p>
+    <p>4. Run and play!</p>
+    
+    <button class="big-button" onclick="copyCode()">
+        📋 COPY ALL MOBA CODE
+    </button>
+    
+    <div id="message" class="message"></div>
+    
+    <textarea id="gameCode" class="code-area" readonly><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>MOBA Battle Scene - Gemini Canvas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            touch-action: manipulation;
+        }
+
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 10px;
+            background: linear-gradient(90deg, #0f3460 0%, #16213e 50%, #0f3460 100%);
+            border-bottom: 2px solid #3498db;
+            font-size: 0.8em;
+            height: 60px;
+        }
+
+        .team-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 80px;
+        }
+
+        .blue-team { color: #3498db; }
+        .red-team { color: #e74c3c; }
+
+        .team-info h3 {
+            font-size: 0.9em;
+            margin-bottom: 2px;
+        }
+
+        .score, .towers {
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+
+        .game-timer {
+            text-align: center;
+        }
+
+        .game-timer h2 {
+            font-size: 1.1em;
+            color: #f39c12;
+            margin-bottom: 2px;
+        }
+
+        .objective-status {
+            font-size: 0.6em;
+            color: #9b59b6;
+        }
+
+        .minimap {
+            position: absolute;
+            top: 65px;
+            right: 5px;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            padding: 4px;
+        }
+
+        #minimap-canvas {
+            width: 120px;
+            height: 90px;
+            border-radius: 2px;
+            background: #2c3e50;
+        }
+
+        .minimap-label {
+            text-align: center;
+            font-size: 0.6em;
+            color: #bdc3c7;
+            margin-top: 2px;
+        }
+
+        #game-canvas {
+            flex: 1;
+            background: linear-gradient(45deg, #1a252f 0%, #2c3e50 100%);
+            border: 2px solid #34495e;
+            margin: 5px;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.2);
+            touch-action: none;
+        }
+
+        .ability-bar {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            background: linear-gradient(90deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+            border-top: 2px solid #3498db;
+            gap: 8px;
+            height: 80px;
+        }
+
+        .champion-portrait {
+            position: relative;
+            width: 48px;
+            height: 48px;
+        }
+
+        .champion-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid #f39c12;
+            box-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+            background: #3498db;
+        }
+
+        .champion-level {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            background: #f39c12;
+            color: #000;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6em;
+            font-weight: bold;
+            border: 1px solid #fff;
+        }
+
+        .abilities {
+            display: flex;
+            gap: 4px;
+        }
+
+        .ability-slot {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #7f8c8d;
+            border-radius: 6px;
+            background: #34495e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            touch-action: manipulation;
+        }
+
+        .ability-slot:active {
+            border-color: #3498db;
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+            transform: scale(0.95);
+        }
+
+        .ability-icon {
+            font-weight: bold;
+            font-size: 1em;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .q-ability { color: #e74c3c; }
+        .w-ability { color: #f39c12; }
+        .e-ability { color: #2ecc71; }
+        .r-ability { color: #9b59b6; }
+
+        .ability-key {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            background: #2c3e50;
+            color: #ecf0f1;
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            font-size: 0.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #7f8c8d;
+        }
+
+        .cooldown-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .health-mana {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .health-bar, .mana-bar {
+            position: relative;
+            height: 16px;
+            background: #2c3e50;
+            border: 1px solid #7f8c8d;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .health-fill, .mana-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3);
+        }
+
+        .health-fill {
+            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .mana-fill {
+            background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .health-text, .mana-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.6em;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            color: #ffffff;
+        }
+
+        .chat-panel {
+            position: absolute;
+            bottom: 85px;
+            left: 5px;
+            width: 200px;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #7f8c8d;
+            border-radius: 4px;
+            overflow: hidden;
+            font-size: 0.7em;
+        }
+
+        .chat-messages {
+            height: 100%;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .chat-message {
+            margin-bottom: 2px;
+            font-size: 0.7em;
+            padding: 1px 2px;
+            border-radius: 2px;
+        }
+
+        .chat-message.system { color: #f39c12; font-style: italic; }
+        .chat-message.ally { color: #2ecc71; }
+        .chat-message.enemy { color: #e74c3c; }
+
+        .mobile-instructions {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #3498db;
+            text-align: center;
+            z-index: 1000;
+            max-width: 90vw;
+        }
+
+        .mobile-instructions.hidden {
+            display: none;
+        }
+
+        .close-instructions {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(52, 152, 219, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+        }
+
+        .ability-slot.ready {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-instructions" id="instructions">
+        <h3>📱 MOBA Battle Controls</h3>
+        <p><strong>Tap anywhere:</strong> Move champion</p>
+        <p><strong>Tap red enemies:</strong> Attack them</p>
+        <p><strong>Tap Q/W/E/R:</strong> Cast abilities</p>
+        <p><strong>Q:</strong> Fireball | <strong>W:</strong> Shield</p>
+        <p><strong>E:</strong> Dash | <strong>R:</strong> Ultimate</p>
+        <button class="close-instructions" onclick="closeInstructions()">Start Battle!</button>
+    </div>
+
+    <div class="game-container">
+        <div class="game-header">
+            <div class="team-info blue-team">
+                <h3>Blue</h3>
+                <div class="score">K: <span id="blue-kills">12</span></div>
+                <div class="towers">T: <span id="blue-towers">7</span></div>
+            </div>
+            <div class="game-timer">
+                <h2><span id="timer">23:45</span></h2>
+                <div class="objective-status">Dragon: <span id="dragon-timer">2:15</span></div>
+            </div>
+            <div class="team-info red-team">
+                <h3>Red</h3>
+                <div class="score">K: <span id="red-kills">9</span></div>
+                <div class="towers">T: <span id="red-towers">6</span></div>
+            </div>
+        </div>
+        
+        <div class="minimap">
+            <canvas id="minimap-canvas" width="120" height="90"></canvas>
+            <div class="minimap-label">Map</div>
+        </div>
+        
+        <canvas id="game-canvas" width="800" height="600"></canvas>
+        
+        <div class="ability-bar">
+            <div class="champion-portrait">
+                <div class="champion-avatar"></div>
+                <div class="champion-level">18</div>
+            </div>
+            <div class="abilities">
+                <div class="ability-slot" data-ability="Q" ontouchstart="castAbilityTouch('Q')">
+                    <div class="ability-icon q-ability">Q</div>
+                    <div class="cooldown-overlay"></div>
+                    <div class="ability-key">Q</div>
+                </div>
+                <div class="ability-slot" data-ability="W" ontouchstart="castAbilityTouch('W')">
+                    <div class="ability-icon w-ability">W</div>
+                    <div class="cooldown-overlay"></div>
+                    <div class="ability-key">W</div>
+                </div>
+                <div class="ability-slot" data-ability="E" ontouchstart="castAbilityTouch('E')">
+                    <div class="ability-icon e-ability">E</div>
+                    <div class="cooldown-overlay"></div>
+                    <div class="ability-key">E</div>
+                </div>
+                <div class="ability-slot" data-ability="R" ontouchstart="castAbilityTouch('R')">
+                    <div class="ability-icon r-ability">R</div>
+                    <div class="cooldown-overlay"></div>
+                    <div class="ability-key">R</div>
+                </div>
+            </div>
+            <div class="health-mana">
+                <div class="health-bar">
+                    <div class="health-fill" style="width: 75%"></div>
+                    <span class="health-text">1875/2500</span>
+                </div>
+                <div class="mana-bar">
+                    <div class="mana-fill" style="width: 60%"></div>
+                    <span class="mana-text">420/700</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-panel">
+            <div class="chat-messages" id="chat-messages">
+                <div class="chat-message system">MOBA Battle Ready!</div>
+                <div class="chat-message ally">Tap to move and attack</div>
+                <div class="chat-message system">Use ability buttons below</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // MOBA Battle Scene Game Logic
+        class MOBAGame {
+            constructor() {
+                this.canvas = document.getElementById('game-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.minimap = document.getElementById('minimap-canvas');
+                this.minimapCtx = this.minimap.getContext('2d');
+                
+                this.gameTime = 23 * 60 + 45;
+                this.dragonTimer = 2 * 60 + 15;
+                
+                this.champions = [];
+                this.minions = [];
+                this.towers = [];
+                this.projectiles = [];
+                this.effects = [];
+                
+                this.player = null;
+                this.selectedTarget = null;
+                
+                this.abilities = {
+                    Q: { cooldown: 0, maxCooldown: 8 },
+                    W: { cooldown: 0, maxCooldown: 12 },
+                    E: { cooldown: 0, maxCooldown: 16 },
+                    R: { cooldown: 0, maxCooldown: 45 }
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupCanvas();
+                this.createGameObjects();
+                this.bindEvents();
+                this.startGameLoop();
+                this.updateTimers();
+            }
+            
+            setupCanvas() {
+                const rect = this.canvas.getBoundingClientRect();
+                this.canvas.width = rect.width;
+                this.canvas.height = rect.height;
+            }
+            
+            createGameObjects() {
+                this.player = new Champion(400, 300, 'blue', true);
+                this.champions.push(this.player);
+                
+                this.champions.push(new Champion(200, 150, 'red'));
+                this.champions.push(new Champion(600, 450, 'red'));
+                this.champions.push(new Champion(300, 500, 'blue'));
+                this.champions.push(new Champion(700, 200, 'blue'));
+                
+                this.towers.push(new Tower(100, 100, 'blue'));
+                this.towers.push(new Tower(700, 500, 'red'));
+                this.towers.push(new Tower(200, 80, 'blue'));
+                this.towers.push(new Tower(600, 520, 'red'));
+                
+                this.createMinionWave('blue', 150, 150);
+                this.createMinionWave('red', 650, 450);
+            }
+            
+            createMinionWave(team, startX, startY) {
+                for (let i = 0; i < 4; i++) {
+                    this.minions.push(new Minion(
+                        startX + i * 25,
+                        startY + Math.random() * 30 - 15,
+                        team
+                    ));
+                }
+            }
+            
+            bindEvents() {
+                this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
+                this.canvas.addEventListener('touchstart', (e) => this.handleTouch(e));
+                this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+                
+                document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+                
+                document.querySelectorAll('.ability-slot').forEach(slot => {
+                    slot.addEventListener('click', (e) => {
+                        const ability = slot.dataset.ability;
+                        this.castAbility(ability);
+                    });
+                });
+            }
+            
+            handleTouch(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = this.canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                this.handleClick(x, y);
+            }
+            
+            handleCanvasClick(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                this.handleClick(x, y);
+            }
+            
+            handleClick(x, y) {
+                let target = null;
+                for (let champion of this.champions) {
+                    if (champion.team !== this.player.team && 
+                        this.isPointInCircle(x, y, champion.x, champion.y, 25)) {
+                        target = champion;
+                        break;
+                    }
+                }
+                
+                if (target) {
+                    this.selectedTarget = target;
+                    this.player.target = target;
+                    this.addChatMessage('ally', 'Attacking enemy!');
+                } else {
+                    this.player.moveTo(x, y);
+                    this.selectedTarget = null;
+                }
+            }
+            
+            handleMouseMove(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                this.mouseX = e.clientX - rect.left;
+                this.mouseY = e.clientY - rect.top;
+            }
+            
+            handleKeyPress(e) {
+                const key = e.key.toUpperCase();
+                if (['Q', 'W', 'E', 'R'].includes(key)) {
+                    this.castAbility(key);
+                    e.preventDefault();
+                }
+            }
+            
+            castAbility(ability) {
+                if (this.abilities[ability].cooldown > 0) {
+                    return;
+                }
+                
+                this.abilities[ability].cooldown = this.abilities[ability].maxCooldown;
+                this.updateAbilityCooldown(ability);
+                
+                switch(ability) {
+                    case 'Q':
+                        this.castFireball();
+                        break;
+                    case 'W':
+                        this.castShield();
+                        break;
+                    case 'E':
+                        this.castDash();
+                        break;
+                    case 'R':
+                        this.castUltimate();
+                        break;
+                }
+                
+                this.addChatMessage('ally', `Cast ${ability} ability!`);
+            }
+            
+            castFireball() {
+                if (this.selectedTarget) {
+                    this.projectiles.push(new Projectile(
+                        this.player.x, this.player.y,
+                        this.selectedTarget.x, this.selectedTarget.y,
+                        'fireball'
+                    ));
+                }
+            }
+            
+            castShield() {
+                this.effects.push(new Effect(this.player.x, this.player.y, 'shield', 3000));
+                this.player.health = Math.min(this.player.maxHealth, this.player.health + 200);
+            }
+            
+            castDash() {
+                if (this.mouseX && this.mouseY) {
+                    const dx = this.mouseX - this.player.x;
+                    const dy = this.mouseY - this.player.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const dashDistance = Math.min(distance, 120);
+                    
+                    this.player.x += (dx / distance) * dashDistance;
+                    this.player.y += (dy / distance) * dashDistance;
+                    this.effects.push(new Effect(this.player.x, this.player.y, 'dash', 500));
+                }
+            }
+            
+            castUltimate() {
+                this.effects.push(new Effect(this.player.x, this.player.y, 'ultimate', 2000));
+                for (let champion of this.champions) {
+                    if (champion.team !== this.player.team) {
+                        const distance = this.getDistance(this.player, champion);
+                        if (distance < 150) {
+                            champion.takeDamage(300);
+                        }
+                    }
+                }
+            }
+            
+            updateAbilityCooldown(ability) {
+                const slot = document.querySelector(`[data-ability="${ability}"]`);
+                const overlay = slot.querySelector('.cooldown-overlay');
+                overlay.style.opacity = '1';
+                
+                const interval = setInterval(() => {
+                    const progress = 1 - (this.abilities[ability].cooldown / this.abilities[ability].maxCooldown);
+                    overlay.style.background = `conic-gradient(transparent ${progress * 360}deg, rgba(0,0,0,0.7) 0deg)`;
+                    
+                    if (this.abilities[ability].cooldown <= 0) {
+                        overlay.style.opacity = '0';
+                        slot.classList.add('ready');
+                        setTimeout(() => slot.classList.remove('ready'), 1000);
+                        clearInterval(interval);
+                    }
+                }, 100);
+            }
+            
+            update() {
+                this.champions.forEach(champion => champion.update());
+                this.minions.forEach(minion => minion.update());
+                this.projectiles.forEach(projectile => projectile.update());
+                this.effects = this.effects.filter(effect => effect.update());
+                
+                for (let ability in this.abilities) {
+                    if (this.abilities[ability].cooldown > 0) {
+                        this.abilities[ability].cooldown -= 1/60;
+                    }
+                }
+                
+                this.projectiles = this.projectiles.filter(p => !p.shouldRemove);
+                this.updateAI();
+            }
+            
+            updateAI() {
+                this.champions.forEach(champion => {
+                    if (!champion.isPlayer && Math.random() < 0.015) {
+                        const enemies = this.champions.filter(c => c.team !== champion.team);
+                        if (enemies.length > 0) {
+                            const target = enemies[Math.floor(Math.random() * enemies.length)];
+                            champion.moveTo(target.x + Math.random() * 80 - 40, target.y + Math.random() * 80 - 40);
+                        }
+                    }
+                });
+            }
+            
+            render() {
+                this.ctx.fillStyle = '#1a252f';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.drawMap();
+                
+                this.towers.forEach(tower => tower.render(this.ctx));
+                this.minions.forEach(minion => minion.render(this.ctx));
+                this.champions.forEach(champion => champion.render(this.ctx));
+                this.projectiles.forEach(projectile => projectile.render(this.ctx));
+                this.effects.forEach(effect => effect.render(this.ctx));
+                
+                this.drawTargetIndicator();
+                this.drawMinimap();
+            }
+            
+            drawMap() {
+                this.ctx.strokeStyle = '#3498db';
+                this.ctx.lineWidth = 15;
+                this.ctx.setLineDash([15, 8]);
+                
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, 80);
+                this.ctx.lineTo(this.canvas.width, 80);
+                this.ctx.stroke();
+                
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, this.canvas.height / 2);
+                this.ctx.lineTo(this.canvas.width, this.canvas.height / 2);
+                this.ctx.stroke();
+                
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, this.canvas.height - 80);
+                this.ctx.lineTo(this.canvas.width, this.canvas.height - 80);
+                this.ctx.stroke();
+                
+                this.ctx.setLineDash([]);
+                
+                this.ctx.fillStyle = 'rgba(46, 204, 113, 0.1)';
+                this.ctx.fillRect(150, 150, 200, 150);
+                this.ctx.fillRect(450, 300, 200, 150);
+                
+                this.ctx.fillStyle = 'rgba(52, 152, 219, 0.3)';
+                this.ctx.fillRect(0, this.canvas.height / 2 - 40, this.canvas.width, 80);
+            }
+            
+            drawTargetIndicator() {
+                if (this.selectedTarget && !this.selectedTarget.isDead) {
+                    this.ctx.strokeStyle = '#e74c3c';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.setLineDash([4, 4]);
+                    this.ctx.beginPath();
+                    this.ctx.arc(this.selectedTarget.x, this.selectedTarget.y, 30, 0, Math.PI * 2);
+                    this.ctx.stroke();
+                    this.ctx.setLineDash([]);
+                }
+            }
+            
+            drawMinimap() {
+                this.minimapCtx.fillStyle = '#2c3e50';
+                this.minimapCtx.fillRect(0, 0, this.minimap.width, this.minimap.height);
+                
+                const scaleX = this.minimap.width / this.canvas.width;
+                const scaleY = this.minimap.height / this.canvas.height;
+                
+                this.champions.forEach(champion => {
+                    if (!champion.isDead) {
+                        this.minimapCtx.fillStyle = champion.team === 'blue' ? '#3498db' : '#e74c3c';
+                        this.minimapCtx.beginPath();
+                        this.minimapCtx.arc(
+                            champion.x * scaleX,
+                            champion.y * scaleY,
+                            2, 0, Math.PI * 2
+                        );
+                        this.minimapCtx.fill();
+                    }
+                });
+                
+                this.towers.forEach(tower => {
+                    if (!tower.isDead) {
+                        this.minimapCtx.fillStyle = tower.team === 'blue' ? '#3498db' : '#e74c3c';
+                        this.minimapCtx.fillRect(
+                            tower.x * scaleX - 1,
+                            tower.y * scaleY - 1,
+                            3, 3
+                        );
+                    }
+                });
+            }
+            
+            updateTimers() {
+                setInterval(() => {
+                    this.gameTime++;
+                    const minutes = Math.floor(this.gameTime / 60);
+                    const seconds = this.gameTime % 60;
+                    document.getElementById('timer').textContent = 
+                        `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (this.dragonTimer > 0) {
+                        this.dragonTimer--;
+                        const dMinutes = Math.floor(this.dragonTimer / 60);
+                        const dSeconds = this.dragonTimer % 60;
+                        document.getElementById('dragon-timer').textContent = 
+                            `${dMinutes}:${dSeconds.toString().padStart(2, '0')}`;
+                    } else {
+                        document.getElementById('dragon-timer').textContent = 'SPAWNED';
+                    }
+                }, 1000);
+            }
+            
+            addChatMessage(type, message) {
+                const chatMessages = document.getElementById('chat-messages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${type}`;
+                messageDiv.textContent = message;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                if (chatMessages.children.length > 8) {
+                    chatMessages.removeChild(chatMessages.firstChild);
+                }
+            }
+            
+            startGameLoop() {
+                const gameLoop = () => {
+                    this.update();
+                    this.render();
+                    requestAnimationFrame(gameLoop);
+                };
+                gameLoop();
+            }
+            
+            getDistance(obj1, obj2) {
+                const dx = obj1.x - obj2.x;
+                const dy = obj1.y - obj2.y;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+            
+            isPointInCircle(px, py, cx, cy, radius) {
+                const dx = px - cx;
+                const dy = py - cy;
+                return (dx * dx + dy * dy) <= (radius * radius);
+            }
+        }
+
+        class Champion {
+            constructor(x, y, team, isPlayer = false) {
+                this.x = x;
+                this.y = y;
+                this.team = team;
+                this.isPlayer = isPlayer;
+                this.health = 1875;
+                this.maxHealth = 2500;
+                this.mana = 420;
+                this.maxMana = 700;
+                this.targetX = x;
+                this.targetY = y;
+                this.speed = 1.5;
+                this.size = 15;
+                this.isDead = false;
+                this.target = null;
+            }
+            
+            update() {
+                if (this.isDead) return;
+                
+                const dx = this.targetX - this.x;
+                const dy = this.targetY - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 3) {
+                    this.x += (dx / distance) * this.speed;
+                    this.y += (dy / distance) * this.speed;
+                }
+                
+                if (this.isPlayer) {
+                    const healthPercent = (this.health / this.maxHealth) * 100;
+                    const manaPercent = (this.mana / this.maxMana) * 100;
+                    
+                    document.querySelector('.health-fill').style.width = `${healthPercent}%`;
+                    document.querySelector('.mana-fill').style.width = `${manaPercent}%`;
+                    document.querySelector('.health-text').textContent = `${this.health}/${this.maxHealth}`;
+                    document.querySelector('.mana-text').textContent = `${this.mana}/${this.maxMana}`;
+                }
+            }
+            
+            moveTo(x, y) {
+                this.targetX = x;
+                this.targetY = y;
+            }
+            
+            takeDamage(amount) {
+                this.health -= amount;
+                if (this.health <= 0) {
+                    this.health = 0;
+                    this.isDead = true;
+                }
+            }
+            
+            render(ctx) {
+                if (this.isDead) return;
+                
+                ctx.fillStyle = this.team === 'blue' ? '#3498db' : '#e74c3c';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                const barWidth = 30;
+                const barHeight = 4;
+                const healthPercent = this.health / this.maxHealth;
+                
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 10, barWidth, barHeight);
+                
+                ctx.fillStyle = '#e74c3c';
+                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 10, barWidth * healthPercent, barHeight);
+                
+                if (this.isPlayer) {
+                    ctx.strokeStyle = '#f39c12';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([2, 2]);
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size + 3, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+            }
+        }
+
+        class Minion {
+            constructor(x, y, team) {
+                this.x = x;
+                this.y = y;
+                this.team = team;
+                this.health = 80;
+                this.maxHealth = 80;
+                this.speed = 0.8;
+                this.size = 6;
+                this.isDead = false;
+                this.targetX = team === 'blue' ? x + 300 : x - 300;
+                this.targetY = y;
+            }
+            
+            update() {
+                if (this.isDead) return;
+                
+                const dx = this.targetX - this.x;
+                const dy = this.targetY - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 3) {
+                    this.x += (dx / distance) * this.speed;
+                    this.y += (dy / distance) * this.speed;
+                }
+            }
+            
+            render(ctx) {
+                if (this.isDead) return;
+                
+                ctx.fillStyle = this.team === 'blue' ? '#85c1e9' : '#f1948a';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        class Tower {
+            constructor(x, y, team) {
+                this.x = x;
+                this.y = y;
+                this.team = team;
+                this.health = 1500;
+                this.maxHealth = 1500;
+                this.size = 20;
+                this.isDead = false;
+            }
+            
+            render(ctx) {
+                if (this.isDead) return;
+                
+                ctx.fillStyle = this.team === 'blue' ? '#2980b9' : '#c0392b';
+                ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
+                
+                ctx.fillStyle = this.team === 'blue' ? '#3498db' : '#e74c3c';
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y - this.size);
+                ctx.lineTo(this.x - this.size/3, this.y - this.size/2);
+                ctx.lineTo(this.x + this.size/3, this.y - this.size/2);
+                ctx.closePath();
+                ctx.fill();
+                
+                const barWidth = 35;
+                const barHeight = 5;
+                const healthPercent = this.health / this.maxHealth;
+                
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 15, barWidth, barHeight);
+                
+                ctx.fillStyle = '#e74c3c';
+                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 15, barWidth * healthPercent, barHeight);
+            }
+        }
+
+        class Projectile {
+            constructor(startX, startY, targetX, targetY, type) {
+                this.x = startX;
+                this.y = startY;
+                this.targetX = targetX;
+                this.targetY = targetY;
+                this.type = type;
+                this.speed = 6;
+                this.shouldRemove = false;
+                
+                const dx = targetX - startX;
+                const dy = targetY - startY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                this.vx = (dx / distance) * this.speed;
+                this.vy = (dy / distance) * this.speed;
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                const distance = Math.sqrt((this.targetX - this.x) ** 2 + (this.targetY - this.y) ** 2);
+                if (distance < 15) {
+                    this.shouldRemove = true;
+                }
+            }
+            
+            render(ctx) {
+                ctx.fillStyle = this.type === 'fireball' ? '#e67e22' : '#3498db';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = ctx.fillStyle;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        class Effect {
+            constructor(x, y, type, duration) {
+                this.x = x;
+                this.y = y;
+                this.type = type;
+                this.duration = duration;
+                this.age = 0;
+                this.size = 0;
+            }
+            
+            update() {
+                this.age += 16;
+                this.size = (this.age / this.duration) * 80;
+                
+                return this.age < this.duration;
+            }
+            
+            render(ctx) {
+                const alpha = 1 - (this.age / this.duration);
+                
+                switch(this.type) {
+                    case 'shield':
+                        ctx.strokeStyle = `rgba(52, 152, 219, ${alpha})`;
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, 25, 0, Math.PI * 2);
+                        ctx.stroke();
+                        break;
+                        
+                    case 'dash':
+                        ctx.fillStyle = `rgba(241, 196, 15, ${alpha})`;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size / 3, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                        
+                    case 'ultimate':
+                        ctx.strokeStyle = `rgba(155, 89, 182, ${alpha})`;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.stroke();
+                        break;
+                }
+            }
+        }
+
+        // Mobile-specific functions
+        function closeInstructions() {
+            document.getElementById('instructions').classList.add('hidden');
+        }
+        
+        function castAbilityTouch(ability) {
+            if (window.game) {
+                window.game.castAbility(ability);
+            }
+        }
+        
+        // Prevent zoom on double tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        // Initialize the game
+        let game;
+        document.addEventListener('DOMContentLoaded', () => {
+            game = new MOBAGame();
+            window.game = game;
+            
+            setInterval(() => {
+                game.addChatMessage('system', 'Minion wave spawned!');
+                game.createMinionWave('blue', 150, 150);
+                game.createMinionWave('red', 650, 450);
+            }, 25000);
+            
+            setInterval(() => {
+                const events = [
+                    'Enemy spotted in jungle!',
+                    'Dragon fight starting!',
+                    'Baron attempt!',
+                    'Tower under attack!',
+                    'Champion needs help!'
+                ];
+                
+                if (Math.random() < 0.25) {
+                    const randomEvent = events[Math.floor(Math.random() * events.length)];
+                    game.addChatMessage('system', randomEvent);
+                }
+            }, 12000);
+        });
+    </script>
+    
+    <script>
+        function copyCode() {
+            const textarea = document.getElementById('gameCode');
+            const message = document.getElementById('message');
+            
+            try {
+                textarea.select();
+                textarea.setSelectionRange(0, 99999);
+                
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(textarea.value).then(() => {
+                        showMessage('✅ Code copied! Go to Gemini Canvas and paste it!', 'success');
+                    }).catch(() => {
+                        document.execCommand('copy');
+                        showMessage('✅ Code copied! Go to Gemini Canvas and paste it!', 'success');
+                    });
+                } else {
+                    document.execCommand('copy');
+                    showMessage('✅ Code copied! Go to Gemini Canvas and paste it!', 'success');
+                }
+            } catch (err) {
+                showMessage('❌ Copy failed. Try long-pressing to select manually.', 'error');
+            }
+        }
+        
+        function showMessage(text, type) {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = `message ${type}`;
+            message.style.display = 'block';
+            
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
