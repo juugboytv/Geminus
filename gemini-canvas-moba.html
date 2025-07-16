@@ -678,33 +678,155 @@
             }
             
             drawMap() {
-                this.ctx.strokeStyle = '#3498db';
-                this.ctx.lineWidth = 15;
-                this.ctx.setLineDash([15, 8]);
+                // Enhanced battleground with realistic atmosphere
                 
-                this.ctx.beginPath();
-                this.ctx.moveTo(0, 80);
-                this.ctx.lineTo(this.canvas.width, 80);
-                this.ctx.stroke();
+                // Background texture with depth
+                const bgGradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+                bgGradient.addColorStop(0, '#0a0f1c');
+                bgGradient.addColorStop(0.3, '#1a252f');
+                bgGradient.addColorStop(0.7, '#1e2328');
+                bgGradient.addColorStop(1, '#0a0f1c');
                 
-                this.ctx.beginPath();
-                this.ctx.moveTo(0, this.canvas.height / 2);
-                this.ctx.lineTo(this.canvas.width, this.canvas.height / 2);
-                this.ctx.stroke();
+                this.ctx.fillStyle = bgGradient;
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
                 
-                this.ctx.beginPath();
-                this.ctx.moveTo(0, this.canvas.height - 80);
-                this.ctx.lineTo(this.canvas.width, this.canvas.height - 80);
-                this.ctx.stroke();
+                // Atmospheric fog effect
+                for (let i = 0; i < 5; i++) {
+                    const fogY = (i * this.canvas.height / 4) + Math.sin(Date.now() * 0.001 + i) * 20;
+                    const fogGradient = this.ctx.createLinearGradient(0, fogY - 30, 0, fogY + 30);
+                    fogGradient.addColorStop(0, 'rgba(100, 149, 237, 0)');
+                    fogGradient.addColorStop(0.5, 'rgba(100, 149, 237, 0.1)');
+                    fogGradient.addColorStop(1, 'rgba(100, 149, 237, 0)');
+                    
+                    this.ctx.fillStyle = fogGradient;
+                    this.ctx.fillRect(0, fogY - 30, this.canvas.width, 60);
+                }
                 
-                this.ctx.setLineDash([]);
+                // Enhanced lane markers with magical energy
+                this.drawLaneMarkers();
                 
-                this.ctx.fillStyle = 'rgba(46, 204, 113, 0.1)';
+                // River with flowing water effect
+                this.drawRiver();
+                
+                // Environmental details
+                this.drawEnvironmentalEffects();
+            }
+            
+            drawLaneMarkers() {
+                const lanePositions = [80, this.canvas.height / 2, this.canvas.height - 80];
+                
+                lanePositions.forEach((y, index) => {
+                    // Glowing lane paths
+                    const laneGradient = this.ctx.createLinearGradient(0, y - 8, 0, y + 8);
+                    laneGradient.addColorStop(0, 'rgba(52, 152, 219, 0)');
+                    laneGradient.addColorStop(0.5, 'rgba(52, 152, 219, 0.6)');
+                    laneGradient.addColorStop(1, 'rgba(52, 152, 219, 0)');
+                    
+                    this.ctx.fillStyle = laneGradient;
+                    this.ctx.fillRect(0, y - 8, this.canvas.width, 16);
+                    
+                    // Animated energy flow along lanes
+                    const time = Date.now() * 0.003;
+                    const segments = 20;
+                    
+                    for (let i = 0; i < segments; i++) {
+                        const x = (i / segments) * this.canvas.width;
+                        const offset = Math.sin(time + i * 0.5) * 4;
+                        const alpha = (Math.sin(time * 2 + i * 0.3) + 1) * 0.3;
+                        
+                        this.ctx.fillStyle = `rgba(135, 206, 250, ${alpha})`;
+                        this.ctx.fillRect(x - 2, y + offset - 1, 8, 2);
+                    }
+                });
+            }
+            
+            drawRiver() {
+                const riverY = this.canvas.height / 2;
+                const riverHeight = 80;
+                const time = Date.now() * 0.002;
+                
+                // Water base
+                const waterGradient = this.ctx.createLinearGradient(0, riverY - riverHeight/2, 0, riverY + riverHeight/2);
+                waterGradient.addColorStop(0, 'rgba(65, 105, 225, 0.3)');
+                waterGradient.addColorStop(0.5, 'rgba(30, 144, 255, 0.5)');
+                waterGradient.addColorStop(1, 'rgba(65, 105, 225, 0.3)');
+                
+                this.ctx.fillStyle = waterGradient;
+                this.ctx.fillRect(0, riverY - riverHeight/2, this.canvas.width, riverHeight);
+                
+                // Flowing water ripples
+                this.ctx.strokeStyle = 'rgba(173, 216, 230, 0.4)';
+                this.ctx.lineWidth = 1;
+                
+                for (let i = 0; i < 8; i++) {
+                    this.ctx.beginPath();
+                    const waveY = riverY + Math.sin(time + i * 0.8) * 15;
+                    
+                    for (let x = 0; x < this.canvas.width; x += 20) {
+                        const y = waveY + Math.sin((x * 0.02) + time + i) * 8;
+                        if (x === 0) this.ctx.moveTo(x, y);
+                        else this.ctx.lineTo(x, y);
+                    }
+                    this.ctx.stroke();
+                }
+                
+                // Water reflections
+                this.ctx.save();
+                this.ctx.globalAlpha = 0.2;
+                this.ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                
+                for (let i = 0; i < 5; i++) {
+                    const x = (Math.sin(time + i) + 1) * this.canvas.width / 2;
+                    const y = riverY + Math.sin(time * 2 + i) * 20;
+                    this.ctx.fillRect(x - 10, y - 2, 20, 4);
+                }
+                
+                this.ctx.restore();
+                
+                // Jungle areas with enhanced visuals
+                this.ctx.fillStyle = 'rgba(46, 204, 113, 0.2)';
+                this.ctx.shadowColor = 'rgba(46, 204, 113, 0.5)';
+                this.ctx.shadowBlur = 10;
                 this.ctx.fillRect(150, 150, 200, 150);
                 this.ctx.fillRect(450, 300, 200, 150);
+                this.ctx.shadowBlur = 0;
+            }
+            
+            drawEnvironmentalEffects() {
+                // Floating particles in the air
+                const time = Date.now() * 0.001;
                 
-                this.ctx.fillStyle = 'rgba(52, 152, 219, 0.3)';
-                this.ctx.fillRect(0, this.canvas.height / 2 - 40, this.canvas.width, 80);
+                for (let i = 0; i < 15; i++) {
+                    const x = (Math.sin(time * 0.5 + i) + 1) * this.canvas.width / 2;
+                    const y = (Math.cos(time * 0.3 + i * 0.7) + 1) * this.canvas.height / 2;
+                    const alpha = (Math.sin(time + i) + 1) * 0.1;
+                    
+                    this.ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, 1, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+                
+                // Ambient magical energy
+                this.ctx.save();
+                this.ctx.globalCompositeOperation = 'screen';
+                
+                for (let i = 0; i < 3; i++) {
+                    const x = (i + 1) * this.canvas.width / 4;
+                    const y = this.canvas.height / 2;
+                    const size = 30 + Math.sin(time + i) * 10;
+                    
+                    const ambientGradient = this.ctx.createRadialGradient(x, y, 0, x, y, size);
+                    ambientGradient.addColorStop(0, 'rgba(138, 43, 226, 0.1)');
+                    ambientGradient.addColorStop(1, 'rgba(138, 43, 226, 0)');
+                    
+                    this.ctx.fillStyle = ambientGradient;
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                }
+                
+                this.ctx.restore();
             }
             
             drawTargetIndicator() {
@@ -863,29 +985,139 @@
             render(ctx) {
                 if (this.isDead) return;
                 
-                ctx.fillStyle = this.team === 'blue' ? '#3498db' : '#e74c3c';
+                // Character body with realistic shading
+                const gradient = ctx.createRadialGradient(
+                    this.x - 3, this.y - 3, 0,
+                    this.x, this.y, this.size * 1.5
+                );
+                
+                if (this.team === 'blue') {
+                    gradient.addColorStop(0, '#87CEEB');
+                    gradient.addColorStop(0.4, '#4682B4');
+                    gradient.addColorStop(0.8, '#1E3A8A');
+                    gradient.addColorStop(1, '#0F172A');
+                } else {
+                    gradient.addColorStop(0, '#FFB6C1');
+                    gradient.addColorStop(0.4, '#DC143C');
+                    gradient.addColorStop(0.8, '#8B0000');
+                    gradient.addColorStop(1, '#2D0A0A');
+                }
+                
+                // Shadow
+                ctx.save();
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+                ctx.shadowBlur = 8;
+                ctx.shadowOffsetX = 3;
+                ctx.shadowOffsetY = 3;
+                
+                // Main character body
+                ctx.fillStyle = gradient;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
                 
-                const barWidth = 30;
-                const barHeight = 4;
+                // Character armor/details
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+                
+                // Inner glow
+                const innerGlow = ctx.createRadialGradient(
+                    this.x, this.y, 0,
+                    this.x, this.y, this.size * 0.7
+                );
+                innerGlow.addColorStop(0, this.team === 'blue' ? 'rgba(135, 206, 235, 0.8)' : 'rgba(255, 105, 180, 0.8)');
+                innerGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                
+                ctx.fillStyle = innerGlow;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 0.7, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Weapon glow
+                const weaponAngle = Math.atan2(this.targetY - this.y, this.targetX - this.x);
+                const weaponX = this.x + Math.cos(weaponAngle) * (this.size + 5);
+                const weaponY = this.y + Math.sin(weaponAngle) * (this.size + 5);
+                
+                ctx.strokeStyle = this.team === 'blue' ? '#00FFFF' : '#FF4500';
+                ctx.lineWidth = 3;
+                ctx.lineCap = 'round';
+                ctx.shadowColor = ctx.strokeStyle;
+                ctx.shadowBlur = 6;
+                
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(weaponX, weaponY);
+                ctx.stroke();
+                
+                ctx.restore();
+                
+                // Enhanced health bar with realistic styling
+                const barWidth = 35;
+                const barHeight = 5;
                 const healthPercent = this.health / this.maxHealth;
                 
-                ctx.fillStyle = '#2c3e50';
-                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 10, barWidth, barHeight);
+                // Health bar background
+                const bgGradient = ctx.createLinearGradient(
+                    this.x - barWidth/2, this.y - this.size - 15,
+                    this.x + barWidth/2, this.y - this.size - 15
+                );
+                bgGradient.addColorStop(0, '#2C3E50');
+                bgGradient.addColorStop(1, '#34495E');
                 
-                ctx.fillStyle = '#e74c3c';
-                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 10, barWidth * healthPercent, barHeight);
+                ctx.fillStyle = bgGradient;
+                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 15, barWidth, barHeight);
                 
+                // Health bar fill
+                const healthGradient = ctx.createLinearGradient(
+                    this.x - barWidth/2, this.y - this.size - 15,
+                    this.x + barWidth/2, this.y - this.size - 15
+                );
+                
+                if (healthPercent > 0.6) {
+                    healthGradient.addColorStop(0, '#2ECC71');
+                    healthGradient.addColorStop(1, '#27AE60');
+                } else if (healthPercent > 0.3) {
+                    healthGradient.addColorStop(0, '#F39C12');
+                    healthGradient.addColorStop(1, '#E67E22');
+                } else {
+                    healthGradient.addColorStop(0, '#E74C3C');
+                    healthGradient.addColorStop(1, '#C0392B');
+                }
+                
+                ctx.fillStyle = healthGradient;
+                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 15, barWidth * healthPercent, barHeight);
+                
+                // Health bar shine effect
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 15, barWidth * healthPercent, barHeight * 0.4);
+                
+                // Player indicator with enhanced glow
                 if (this.isPlayer) {
-                    ctx.strokeStyle = '#f39c12';
+                    ctx.save();
+                    ctx.strokeStyle = '#FFD700';
                     ctx.lineWidth = 2;
-                    ctx.setLineDash([2, 2]);
+                    ctx.shadowColor = '#FFD700';
+                    ctx.shadowBlur = 10;
+                    ctx.setLineDash([3, 3]);
+                    
                     ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size + 3, 0, Math.PI * 2);
+                    ctx.arc(this.x, this.y, this.size + 8, 0, Math.PI * 2);
                     ctx.stroke();
+                    
+                    // Rotating energy rings
+                    const time = Date.now() * 0.005;
                     ctx.setLineDash([]);
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = 'rgba(255, 215, 0, 0.6)';
+                    
+                    for (let i = 0; i < 3; i++) {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size + 12 + i * 4, time + i, time + i + Math.PI);
+                        ctx.stroke();
+                    }
+                    
+                    ctx.restore();
                 }
             }
         }
@@ -920,10 +1152,64 @@
             render(ctx) {
                 if (this.isDead) return;
                 
-                ctx.fillStyle = this.team === 'blue' ? '#85c1e9' : '#f1948a';
+                // Enhanced minion rendering with realistic effects
+                ctx.save();
+                
+                // Minion shadow
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+                ctx.shadowBlur = 4;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+                
+                // Minion body gradient
+                const gradient = ctx.createRadialGradient(
+                    this.x - 2, this.y - 2, 0,
+                    this.x, this.y, this.size * 1.2
+                );
+                
+                if (this.team === 'blue') {
+                    gradient.addColorStop(0, '#b3d9ff');
+                    gradient.addColorStop(0.6, '#85c1e9');
+                    gradient.addColorStop(1, '#5dade2');
+                } else {
+                    gradient.addColorStop(0, '#ffb3ba');
+                    gradient.addColorStop(0.6, '#f1948a');
+                    gradient.addColorStop(1, '#ec7063');
+                }
+                
+                ctx.fillStyle = gradient;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
+                
+                // Minion highlight
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+                
+                const highlight = ctx.createRadialGradient(
+                    this.x - 2, this.y - 2, 0,
+                    this.x, this.y, this.size * 0.6
+                );
+                highlight.addColorStop(0, this.team === 'blue' ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 200, 200, 0.7)');
+                highlight.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                
+                ctx.fillStyle = highlight;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size * 0.6, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Team indicator glow
+                ctx.strokeStyle = this.team === 'blue' ? '#3498db' : '#e74c3c';
+                ctx.lineWidth = 1;
+                ctx.shadowColor = ctx.strokeStyle;
+                ctx.shadowBlur = 3;
+                
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size + 2, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                ctx.restore();
             }
         }
 
@@ -941,26 +1227,139 @@
             render(ctx) {
                 if (this.isDead) return;
                 
-                ctx.fillStyle = this.team === 'blue' ? '#2980b9' : '#c0392b';
+                ctx.save();
+                
+                // Tower shadow
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                ctx.shadowBlur = 12;
+                ctx.shadowOffsetX = 4;
+                ctx.shadowOffsetY = 4;
+                
+                // Tower base with realistic stone texture
+                const baseGradient = ctx.createLinearGradient(
+                    this.x - this.size/2, this.y - this.size/2,
+                    this.x + this.size/2, this.y + this.size/2
+                );
+                
+                if (this.team === 'blue') {
+                    baseGradient.addColorStop(0, '#34495E');
+                    baseGradient.addColorStop(0.3, '#2980b9');
+                    baseGradient.addColorStop(0.7, '#1B4F72');
+                    baseGradient.addColorStop(1, '#17202A');
+                } else {
+                    baseGradient.addColorStop(0, '#5D4037');
+                    baseGradient.addColorStop(0.3, '#c0392b');
+                    baseGradient.addColorStop(0.7, '#922B21');
+                    baseGradient.addColorStop(1, '#2C1810');
+                }
+                
+                ctx.fillStyle = baseGradient;
                 ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
                 
-                ctx.fillStyle = this.team === 'blue' ? '#3498db' : '#e74c3c';
+                // Tower details and texture
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+                
+                // Stone blocks effect
+                ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+                ctx.lineWidth = 1;
+                for (let i = 0; i < 3; i++) {
+                    const y = this.y - this.size/2 + (i * this.size/3);
+                    ctx.beginPath();
+                    ctx.moveTo(this.x - this.size/2, y);
+                    ctx.lineTo(this.x + this.size/2, y);
+                    ctx.stroke();
+                }
+                
+                // Tower top crystal/gem
+                const crystalGradient = ctx.createRadialGradient(
+                    this.x, this.y - this.size, 0,
+                    this.x, this.y - this.size, this.size/2
+                );
+                
+                if (this.team === 'blue') {
+                    crystalGradient.addColorStop(0, '#85C1E9');
+                    crystalGradient.addColorStop(0.5, '#3498db');
+                    crystalGradient.addColorStop(1, '#1B4F72');
+                } else {
+                    crystalGradient.addColorStop(0, '#F1948A');
+                    crystalGradient.addColorStop(0.5, '#e74c3c');
+                    crystalGradient.addColorStop(1, '#922B21');
+                }
+                
+                ctx.fillStyle = crystalGradient;
                 ctx.beginPath();
-                ctx.moveTo(this.x, this.y - this.size);
-                ctx.lineTo(this.x - this.size/3, this.y - this.size/2);
-                ctx.lineTo(this.x + this.size/3, this.y - this.size/2);
+                ctx.moveTo(this.x, this.y - this.size * 1.5);
+                ctx.lineTo(this.x - this.size/2, this.y - this.size/2);
+                ctx.lineTo(this.x + this.size/2, this.y - this.size/2);
                 ctx.closePath();
                 ctx.fill();
                 
-                const barWidth = 35;
-                const barHeight = 5;
+                // Crystal glow effect
+                ctx.shadowColor = this.team === 'blue' ? '#3498db' : '#e74c3c';
+                ctx.shadowBlur = 15;
+                ctx.strokeStyle = this.team === 'blue' ? 'rgba(52, 152, 219, 0.8)' : 'rgba(231, 76, 60, 0.8)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Magical energy emanating from tower
+                const time = Date.now() * 0.003;
+                ctx.shadowBlur = 8;
+                
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * Math.PI / 3) + time;
+                    const distance = this.size + 8 + Math.sin(time * 2 + i) * 4;
+                    const x = this.x + Math.cos(angle) * distance;
+                    const y = this.y + Math.sin(angle) * distance;
+                    
+                    ctx.fillStyle = this.team === 'blue' ? 'rgba(52, 152, 219, 0.6)' : 'rgba(231, 76, 60, 0.6)';
+                    ctx.beginPath();
+                    ctx.arc(x, y, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                ctx.restore();
+                
+                // Enhanced health bar
+                const barWidth = 40;
+                const barHeight = 6;
                 const healthPercent = this.health / this.maxHealth;
                 
-                ctx.fillStyle = '#2c3e50';
-                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 15, barWidth, barHeight);
+                // Health bar background with depth
+                const barBgGradient = ctx.createLinearGradient(
+                    this.x - barWidth/2, this.y - this.size - 20,
+                    this.x + barWidth/2, this.y - this.size - 20
+                );
+                barBgGradient.addColorStop(0, '#1C2833');
+                barBgGradient.addColorStop(1, '#2C3E50');
                 
-                ctx.fillStyle = '#e74c3c';
-                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 15, barWidth * healthPercent, barHeight);
+                ctx.fillStyle = barBgGradient;
+                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 20, barWidth, barHeight);
+                
+                // Health bar fill with team colors
+                const healthGradient = ctx.createLinearGradient(
+                    this.x - barWidth/2, this.y - this.size - 20,
+                    this.x + barWidth/2, this.y - this.size - 20
+                );
+                
+                if (healthPercent > 0.6) {
+                    healthGradient.addColorStop(0, '#2ECC71');
+                    healthGradient.addColorStop(1, '#27AE60');
+                } else if (healthPercent > 0.3) {
+                    healthGradient.addColorStop(0, '#F39C12');
+                    healthGradient.addColorStop(1, '#E67E22');
+                } else {
+                    healthGradient.addColorStop(0, '#E74C3C');
+                    healthGradient.addColorStop(1, '#C0392B');
+                }
+                
+                ctx.fillStyle = healthGradient;
+                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 20, barWidth * healthPercent, barHeight);
+                
+                // Health bar shine
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 20, barWidth * healthPercent, barHeight * 0.5);
             }
         }
 
@@ -1012,41 +1411,299 @@
                 this.duration = duration;
                 this.age = 0;
                 this.size = 0;
+                this.particles = [];
+                this.rotation = 0;
+                
+                // Initialize particles for different effects
+                this.initializeParticles();
+            }
+            
+            initializeParticles() {
+                const particleCount = this.type === 'ultimate' ? 20 : this.type === 'shield' ? 12 : 8;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    this.particles.push({
+                        x: this.x + (Math.random() - 0.5) * 20,
+                        y: this.y + (Math.random() - 0.5) * 20,
+                        vx: (Math.random() - 0.5) * 4,
+                        vy: (Math.random() - 0.5) * 4,
+                        size: Math.random() * 3 + 1,
+                        life: 1.0,
+                        decay: Math.random() * 0.02 + 0.01,
+                        angle: Math.random() * Math.PI * 2,
+                        angleSpeed: (Math.random() - 0.5) * 0.2
+                    });
+                }
             }
             
             update() {
                 this.age += 16;
                 this.size = (this.age / this.duration) * 80;
+                this.rotation += 0.05;
+                
+                // Update particles
+                this.particles.forEach(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.life -= particle.decay;
+                    particle.angle += particle.angleSpeed;
+                    
+                    // Apply attraction to center for some effects
+                    if (this.type === 'ultimate') {
+                        const dx = this.x - particle.x;
+                        const dy = this.y - particle.y;
+                        particle.vx += dx * 0.001;
+                        particle.vy += dy * 0.001;
+                    }
+                });
+                
+                // Remove dead particles and add new ones for continuous effects
+                this.particles = this.particles.filter(p => p.life > 0);
+                
+                if (this.type === 'shield' && this.particles.length < 8) {
+                    this.particles.push({
+                        x: this.x + Math.cos(this.rotation) * 25,
+                        y: this.y + Math.sin(this.rotation) * 25,
+                        vx: 0,
+                        vy: 0,
+                        size: Math.random() * 2 + 1,
+                        life: 1.0,
+                        decay: 0.02,
+                        angle: this.rotation,
+                        angleSpeed: 0
+                    });
+                }
                 
                 return this.age < this.duration;
             }
             
             render(ctx) {
                 const alpha = 1 - (this.age / this.duration);
+                ctx.save();
                 
                 switch(this.type) {
                     case 'shield':
-                        ctx.strokeStyle = `rgba(52, 152, 219, ${alpha})`;
-                        ctx.lineWidth = 2;
-                        ctx.beginPath();
-                        ctx.arc(this.x, this.y, 25, 0, Math.PI * 2);
-                        ctx.stroke();
+                        this.renderShieldEffect(ctx, alpha);
                         break;
                         
                     case 'dash':
-                        ctx.fillStyle = `rgba(241, 196, 15, ${alpha})`;
-                        ctx.beginPath();
-                        ctx.arc(this.x, this.y, this.size / 3, 0, Math.PI * 2);
-                        ctx.fill();
+                        this.renderDashEffect(ctx, alpha);
                         break;
                         
                     case 'ultimate':
-                        ctx.strokeStyle = `rgba(155, 89, 182, ${alpha})`;
-                        ctx.lineWidth = 3;
-                        ctx.beginPath();
-                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                        ctx.stroke();
+                        this.renderUltimateEffect(ctx, alpha);
                         break;
+                }
+                
+                // Render particles
+                this.renderParticles(ctx, alpha);
+                ctx.restore();
+            }
+            
+            renderShieldEffect(ctx, alpha) {
+                // Multiple rotating shield rings
+                for (let i = 0; i < 3; i++) {
+                    const radius = 25 + i * 8;
+                    const rotation = this.rotation * (1 + i * 0.5);
+                    
+                    // Outer glow
+                    ctx.shadowColor = `rgba(52, 152, 219, ${alpha * 0.8})`;
+                    ctx.shadowBlur = 15;
+                    
+                    // Shield ring gradient
+                    const gradient = ctx.createRadialGradient(
+                        this.x, this.y, radius - 5,
+                        this.x, this.y, radius + 5
+                    );
+                    gradient.addColorStop(0, `rgba(52, 152, 219, ${alpha * 0.8})`);
+                    gradient.addColorStop(0.5, `rgba(155, 205, 255, ${alpha})`);
+                    gradient.addColorStop(1, `rgba(52, 152, 219, ${alpha * 0.4})`);
+                    
+                    ctx.strokeStyle = gradient;
+                    ctx.lineWidth = 4;
+                    
+                    // Draw hexagonal shield pattern
+                    ctx.beginPath();
+                    for (let j = 0; j < 6; j++) {
+                        const angle = (j * Math.PI / 3) + rotation;
+                        const x = this.x + Math.cos(angle) * radius;
+                        const y = this.y + Math.sin(angle) * radius;
+                        
+                        if (j === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+                
+                // Central energy core
+                const coreGradient = ctx.createRadialGradient(
+                    this.x, this.y, 0,
+                    this.x, this.y, 10
+                );
+                coreGradient.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
+                coreGradient.addColorStop(0.5, `rgba(52, 152, 219, ${alpha * 0.8})`);
+                coreGradient.addColorStop(1, `rgba(52, 152, 219, 0)`);
+                
+                ctx.fillStyle = coreGradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 10, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            renderDashEffect(ctx, alpha) {
+                // Lightning trail effect
+                ctx.shadowColor = `rgba(241, 196, 15, ${alpha})`;
+                ctx.shadowBlur = 12;
+                
+                // Multiple lightning bolts
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i * Math.PI * 2 / 5) + this.rotation;
+                    const length = this.size * 0.8;
+                    
+                    const gradient = ctx.createLinearGradient(
+                        this.x, this.y,
+                        this.x + Math.cos(angle) * length,
+                        this.y + Math.sin(angle) * length
+                    );
+                    gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
+                    gradient.addColorStop(0.5, `rgba(241, 196, 15, ${alpha * 0.8})`);
+                    gradient.addColorStop(1, `rgba(241, 196, 15, 0)`);
+                    
+                    ctx.strokeStyle = gradient;
+                    ctx.lineWidth = 3;
+                    ctx.lineCap = 'round';
+                    
+                    // Jagged lightning effect
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    
+                    const segments = 4;
+                    for (let j = 1; j <= segments; j++) {
+                        const progress = j / segments;
+                        const x = this.x + Math.cos(angle) * length * progress;
+                        const y = this.y + Math.sin(angle) * length * progress;
+                        const jitter = (Math.sin(this.rotation * 5 + i + j) * 8);
+                        
+                        ctx.lineTo(
+                            x + Math.cos(angle + Math.PI/2) * jitter,
+                            y + Math.sin(angle + Math.PI/2) * jitter
+                        );
+                    }
+                    ctx.stroke();
+                }
+                
+                // Central explosion
+                const explosionGradient = ctx.createRadialGradient(
+                    this.x, this.y, 0,
+                    this.x, this.y, this.size / 2
+                );
+                explosionGradient.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
+                explosionGradient.addColorStop(0.3, `rgba(255, 215, 0, ${alpha * 0.8})`);
+                explosionGradient.addColorStop(1, `rgba(241, 196, 15, 0)`);
+                
+                ctx.fillStyle = explosionGradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            renderUltimateEffect(ctx, alpha) {
+                // Massive magical explosion with multiple layers
+                ctx.shadowColor = `rgba(155, 89, 182, ${alpha})`;
+                ctx.shadowBlur = 20;
+                
+                // Outer shockwave
+                for (let i = 0; i < 3; i++) {
+                    const radius = this.size + i * 15;
+                    const waveAlpha = alpha * (1 - i * 0.3);
+                    
+                    const shockGradient = ctx.createRadialGradient(
+                        this.x, this.y, radius - 10,
+                        this.x, this.y, radius + 10
+                    );
+                    shockGradient.addColorStop(0, `rgba(155, 89, 182, 0)`);
+                    shockGradient.addColorStop(0.5, `rgba(155, 89, 182, ${waveAlpha})`);
+                    shockGradient.addColorStop(1, `rgba(155, 89, 182, 0)`);
+                    
+                    ctx.strokeStyle = shockGradient;
+                    ctx.lineWidth = 6;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, radius, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+                
+                // Rotating magical circles
+                for (let i = 0; i < 2; i++) {
+                    const rotation = this.rotation * (i % 2 === 0 ? 1 : -1);
+                    const radius = 40 + i * 20;
+                    
+                    ctx.strokeStyle = `rgba(218, 112, 214, ${alpha * 0.8})`;
+                    ctx.lineWidth = 2;
+                    
+                    // Draw magical runes
+                    for (let j = 0; j < 8; j++) {
+                        const angle = (j * Math.PI / 4) + rotation;
+                        const x1 = this.x + Math.cos(angle) * radius;
+                        const y1 = this.y + Math.sin(angle) * radius;
+                        const x2 = this.x + Math.cos(angle) * (radius + 10);
+                        const y2 = this.y + Math.sin(angle) * (radius + 10);
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    }
+                }
+                
+                // Central vortex
+                const vortexGradient = ctx.createRadialGradient(
+                    this.x, this.y, 0,
+                    this.x, this.y, 25
+                );
+                vortexGradient.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
+                vortexGradient.addColorStop(0.3, `rgba(218, 112, 214, ${alpha * 0.9})`);
+                vortexGradient.addColorStop(0.7, `rgba(155, 89, 182, ${alpha * 0.6})`);
+                vortexGradient.addColorStop(1, `rgba(155, 89, 182, 0)`);
+                
+                ctx.fillStyle = vortexGradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 25, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            renderParticles(ctx, baseAlpha) {
+                this.particles.forEach(particle => {
+                    const alpha = particle.life * baseAlpha;
+                    
+                    // Particle glow
+                    ctx.shadowColor = this.getParticleColor(alpha);
+                    ctx.shadowBlur = 6;
+                    
+                    const gradient = ctx.createRadialGradient(
+                        particle.x, particle.y, 0,
+                        particle.x, particle.y, particle.size
+                    );
+                    gradient.addColorStop(0, this.getParticleColor(alpha));
+                    gradient.addColorStop(1, this.getParticleColor(0));
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+            
+            getParticleColor(alpha) {
+                switch(this.type) {
+                    case 'shield':
+                        return `rgba(52, 152, 219, ${alpha})`;
+                    case 'dash':
+                        return `rgba(241, 196, 15, ${alpha})`;
+                    case 'ultimate':
+                        return `rgba(155, 89, 182, ${alpha})`;
+                    default:
+                        return `rgba(255, 255, 255, ${alpha})`;
                 }
             }
         }
