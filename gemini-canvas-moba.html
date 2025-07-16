@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>MOBA Battle Scene - Gemini Canvas</title>
+    <title>Epic PvE Combat Arena - Gemini Canvas</title>
     <style>
         * {
             margin: 0;
@@ -33,421 +33,341 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 5px 10px;
+            padding: 10px 20px;
             background: linear-gradient(90deg, #0f3460 0%, #16213e 50%, #0f3460 100%);
-            border-bottom: 2px solid #3498db;
-            font-size: 0.8em;
-            height: 60px;
+            border-bottom: 3px solid #3498db;
+            font-size: 1em;
+            height: 80px;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
         }
 
-        .team-info {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 80px;
-        }
-
-        .blue-team { color: #3498db; }
-        .red-team { color: #e74c3c; }
-
-        .team-info h3 {
-            font-size: 0.9em;
-            margin-bottom: 2px;
-        }
-
-        .score, .towers {
-            font-size: 0.7em;
-            font-weight: bold;
-        }
-
-        .game-timer {
+        .combat-title {
             text-align: center;
+            flex: 1;
         }
 
-        .game-timer h2 {
-            font-size: 1.1em;
+        .combat-title h1 {
+            font-size: 1.8em;
             color: #f39c12;
-            margin-bottom: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            margin-bottom: 5px;
         }
 
-        .objective-status {
-            font-size: 0.6em;
+        .combat-subtitle {
+            font-size: 0.9em;
             color: #9b59b6;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         }
 
-        .minimap {
-            position: absolute;
-            top: 65px;
-            right: 5px;
-            z-index: 50;
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid #3498db;
-            border-radius: 4px;
-            padding: 4px;
-        }
-
-        #minimap-canvas {
-            width: 120px;
-            height: 90px;
-            border-radius: 2px;
-            background: #2c3e50;
-        }
-
-        .minimap-label {
-            text-align: center;
-            font-size: 0.6em;
-            color: #bdc3c7;
-            margin-top: 2px;
+        .canvas-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
         }
 
         #game-canvas {
-            flex: 1;
-            background: linear-gradient(45deg, #1a252f 0%, #2c3e50 100%);
-            border: 2px solid #34495e;
-            margin: 5px;
-            box-shadow: 0 0 20px rgba(52, 152, 219, 0.2);
-            touch-action: none;
+            width: 100%;
+            height: 100%;
+            display: block;
+            background: radial-gradient(circle at center, #2c3e50 0%, #1a252f 70%, #0f1419 100%);
         }
 
-        .ability-bar {
-            display: flex;
-            align-items: center;
-            padding: 8px 10px;
-            background: linear-gradient(90deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
-            border-top: 2px solid #3498db;
-            gap: 8px;
-            height: 80px;
-        }
-
-        .champion-portrait {
-            position: relative;
-            width: 48px;
-            height: 48px;
-        }
-
-        .champion-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 2px solid #f39c12;
-            box-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
-            background: #3498db;
-        }
-
-        .champion-level {
+        .combat-controls {
             position: absolute;
-            bottom: -1px;
-            right: -1px;
-            background: #f39c12;
-            color: #000;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.6em;
-            font-weight: bold;
-            border: 1px solid #fff;
-        }
-
-        .abilities {
-            display: flex;
-            gap: 4px;
-        }
-
-        .ability-slot {
-            position: relative;
-            width: 40px;
-            height: 40px;
-            border: 2px solid #7f8c8d;
-            border-radius: 6px;
-            background: #34495e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            touch-action: manipulation;
-        }
-
-        .ability-slot:active {
-            border-color: #3498db;
-            box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
-            transform: scale(0.95);
-        }
-
-        .ability-icon {
-            font-weight: bold;
-            font-size: 1em;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-        }
-
-        .q-ability { color: #e74c3c; }
-        .w-ability { color: #f39c12; }
-        .e-ability { color: #2ecc71; }
-        .r-ability { color: #9b59b6; }
-
-        .ability-key {
-            position: absolute;
-            bottom: -1px;
-            right: -1px;
-            background: #2c3e50;
-            color: #ecf0f1;
-            width: 12px;
-            height: 12px;
-            border-radius: 2px;
-            font-size: 0.5em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #7f8c8d;
-        }
-
-        .cooldown-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 4px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .health-mana {
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            flex: 1;
-            max-width: 200px;
+            align-items: center;
+            gap: 15px;
+            z-index: 100;
         }
 
-        .health-bar, .mana-bar {
-            position: relative;
-            height: 16px;
-            background: #2c3e50;
-            border: 1px solid #7f8c8d;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .health-fill, .mana-fill {
-            height: 100%;
-            transition: width 0.5s ease;
-            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3);
-        }
-
-        .health-fill {
-            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
-        }
-
-        .mana-fill {
-            background: linear-gradient(90deg, #3498db 0%, #2980b9 100%);
-        }
-
-        .health-text, .mana-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 0.6em;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-            color: #ffffff;
-        }
-
-        .chat-panel {
-            position: absolute;
-            bottom: 85px;
-            left: 5px;
-            width: 200px;
-            height: 100px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid #7f8c8d;
-            border-radius: 4px;
-            overflow: hidden;
-            font-size: 0.7em;
-        }
-
-        .chat-messages {
-            height: 100%;
-            overflow-y: auto;
-            padding: 4px;
-        }
-
-        .chat-message {
-            margin-bottom: 2px;
-            font-size: 0.7em;
-            padding: 1px 2px;
-            border-radius: 2px;
-        }
-
-        .chat-message.system { color: #f39c12; font-style: italic; }
-        .chat-message.ally { color: #2ecc71; }
-        .chat-message.enemy { color: #e74c3c; }
-
-        .mobile-instructions {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .monster-selection {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
             background: rgba(0, 0, 0, 0.9);
-            padding: 20px;
-            border-radius: 8px;
+            padding: 15px 25px;
+            border-radius: 15px;
             border: 2px solid #3498db;
+            box-shadow: 0 8px 32px rgba(52, 152, 219, 0.4);
+        }
+
+        .monster-dropdown {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: #ecf0f1;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
             text-align: center;
-            z-index: 1000;
-            max-width: 90vw;
         }
 
-        .mobile-instructions.hidden {
-            display: none;
+        .monster-dropdown:hover {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.6);
         }
 
-        .close-instructions {
-            background: #3498db;
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            margin-top: 10px;
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
             cursor: pointer;
+            transition: all 0.3s ease;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+            min-width: 120px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.6);
+        }
+
+        .action-btn.engage {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+        }
+
+        .action-btn.engage:hover {
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.6);
+        }
+
+        .action-btn.cast {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);
+        }
+
+        .action-btn.cast:hover {
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.6);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .character-selection {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+
+        .character-btn {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .character-btn.active {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.6);
+        }
+
+        .character-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .combat-info {
+            position: absolute;
+            top: 100px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #3498db;
+            max-width: 300px;
+            z-index: 50;
+        }
+
+        .combat-log {
+            position: absolute;
+            top: 100px;
+            right: 20px;
+            width: 250px;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 10px;
+            overflow-y: auto;
+            z-index: 50;
+        }
+
+        .log-entry {
+            color: #ecf0f1;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            padding: 3px 5px;
+            border-radius: 3px;
+        }
+
+        .log-entry.damage {
+            background: rgba(231, 76, 60, 0.3);
+            color: #ff6b6b;
+        }
+
+        .log-entry.cast {
+            background: rgba(155, 89, 182, 0.3);
+            color: #bb86fc;
+        }
+
+        .log-entry.engage {
+            background: rgba(243, 156, 18, 0.3);
+            color: #ffd93d;
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7); }
-            70% { box-shadow: 0 0 0 8px rgba(52, 152, 219, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
-        .ability-slot.ready {
+        .pulsing {
             animation: pulse 2s infinite;
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4); }
+            50% { box-shadow: 0 8px 30px rgba(52, 152, 219, 0.8); }
+            100% { box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4); }
+        }
+
+        .glowing {
+            animation: glow 2s infinite;
         }
     </style>
 </head>
 <body>
-    <div class="mobile-instructions" id="instructions">
-        <h3>📱 MOBA Battle Controls</h3>
-        <p><strong>Tap anywhere:</strong> Move champion</p>
-        <p><strong>Tap red enemies:</strong> Attack them</p>
-        <p><strong>Tap Q/W/E/R:</strong> Cast abilities</p>
-        <p><strong>Q:</strong> Fireball | <strong>W:</strong> Shield</p>
-        <p><strong>E:</strong> Dash | <strong>R:</strong> Ultimate</p>
-        <button class="close-instructions" onclick="closeInstructions()">Start Battle!</button>
-    </div>
-
     <div class="game-container">
         <div class="game-header">
-            <div class="team-info blue-team">
-                <h3>Blue</h3>
-                <div class="score">K: <span id="blue-kills">12</span></div>
-                <div class="towers">T: <span id="blue-towers">7</span></div>
-            </div>
-            <div class="game-timer">
-                <h2><span id="timer">23:45</span></h2>
-                <div class="objective-status">Dragon: <span id="dragon-timer">2:15</span></div>
-            </div>
-            <div class="team-info red-team">
-                <h3>Red</h3>
-                <div class="score">K: <span id="red-kills">9</span></div>
-                <div class="towers">T: <span id="red-towers">6</span></div>
+            <div class="combat-title">
+                <h1>⚔️ EPIC PvE COMBAT ARENA ⚔️</h1>
+                <div class="combat-subtitle">Choose your warrior and face legendary monsters!</div>
             </div>
         </div>
         
-        <div class="minimap">
-            <canvas id="minimap-canvas" width="120" height="90"></canvas>
-            <div class="minimap-label">Map</div>
-        </div>
-        
-        <canvas id="game-canvas" width="800" height="600"></canvas>
-        
-        <div class="ability-bar">
-            <div class="champion-portrait">
-                <div class="champion-avatar"></div>
-                <div class="champion-level">18</div>
-            </div>
-            <div class="abilities">
-                <div class="ability-slot" data-ability="Q" ontouchstart="castAbilityTouch('Q')">
-                    <div class="ability-icon q-ability">Q</div>
-                    <div class="cooldown-overlay"></div>
-                    <div class="ability-key">Q</div>
+        <div class="canvas-container">
+            <canvas id="game-canvas"></canvas>
+            
+            <div class="combat-info">
+                <h3 style="color: #3498db; margin-bottom: 10px;">🛡️ Combat Status</h3>
+                <div id="player-status">
+                    <div>Character: <span id="current-character">Wizard</span></div>
+                    <div>Health: <span id="player-health">100%</span></div>
+                    <div>Mana: <span id="player-mana">100%</span></div>
                 </div>
-                <div class="ability-slot" data-ability="W" ontouchstart="castAbilityTouch('W')">
-                    <div class="ability-icon w-ability">W</div>
-                    <div class="cooldown-overlay"></div>
-                    <div class="ability-key">W</div>
-                </div>
-                <div class="ability-slot" data-ability="E" ontouchstart="castAbilityTouch('E')">
-                    <div class="ability-icon e-ability">E</div>
-                    <div class="cooldown-overlay"></div>
-                    <div class="ability-key">E</div>
-                </div>
-                <div class="ability-slot" data-ability="R" ontouchstart="castAbilityTouch('R')">
-                    <div class="ability-icon r-ability">R</div>
-                    <div class="cooldown-overlay"></div>
-                    <div class="ability-key">R</div>
+                <div id="monster-status" style="margin-top: 10px;">
+                    <div>Monster: <span id="current-monster">None Selected</span></div>
+                    <div>Health: <span id="monster-health">100%</span></div>
                 </div>
             </div>
-            <div class="health-mana">
-                <div class="health-bar">
-                    <div class="health-fill" style="width: 75%"></div>
-                    <span class="health-text">1875/2500</span>
-                </div>
-                <div class="mana-bar">
-                    <div class="mana-fill" style="width: 60%"></div>
-                    <span class="mana-text">420/700</span>
-                </div>
+            
+            <div class="combat-log">
+                <h4 style="color: #3498db; margin-bottom: 10px;">📜 Combat Log</h4>
+                <div id="log-entries"></div>
             </div>
-        </div>
-        
-        <div class="chat-panel">
-            <div class="chat-messages" id="chat-messages">
-                <div class="chat-message system">MOBA Battle Ready!</div>
-                <div class="chat-message ally">Tap to move and attack</div>
-                <div class="chat-message system">Use ability buttons below</div>
+            
+            <div class="combat-controls">
+                <div class="character-selection">
+                    <button class="character-btn active" onclick="selectCharacter('wizard')">🧙‍♂️ Wizard</button>
+                    <button class="character-btn" onclick="selectCharacter('knight')">⚔️ Knight</button>
+                </div>
+                
+                <div class="monster-selection">
+                    <label style="color: #3498db; font-weight: bold; margin-bottom: 5px;">Select Monster:</label>
+                    <select class="monster-dropdown" id="monster-select">
+                        <option value="">Choose your enemy...</option>
+                        <option value="goblin">🧌 Savage Goblin (Level 1)</option>
+                        <option value="orc">👹 Brutal Orc (Level 3)</option>
+                        <option value="troll">🧟 Ancient Troll (Level 5)</option>
+                        <option value="dragon">🐉 Fire Dragon (Level 10)</option>
+                        <option value="demon">👺 Shadow Demon (Level 15)</option>
+                        <option value="titan">🗿 Stone Titan (Level 20)</option>
+                    </select>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn engage" onclick="engageMonster()" id="engage-btn" disabled>🎯 ENGAGE</button>
+                    <button class="action-btn" onclick="attackMonster()" id="attack-btn" disabled>⚔️ ATTACK</button>
+                    <button class="action-btn cast" onclick="castSpell()" id="cast-btn" disabled>🔮 CAST</button>
+                </div>
             </div>
         </div>
     </div>
     
     <script>
-        // MOBA Battle Scene Game Logic
-        class MOBAGame {
+        // Epic PvE Combat Game
+        class PvECombatGame {
             constructor() {
                 this.canvas = document.getElementById('game-canvas');
                 this.ctx = this.canvas.getContext('2d');
-                this.minimap = document.getElementById('minimap-canvas');
-                this.minimapCtx = this.minimap.getContext('2d');
                 
-                this.gameTime = 23 * 60 + 45;
-                this.dragonTimer = 2 * 60 + 15;
+                this.setupCanvas();
                 
-                this.champions = [];
-                this.minions = [];
-                this.towers = [];
-                this.projectiles = [];
-                this.effects = [];
+                // Game state
+                this.currentCharacter = 'wizard';
+                this.selectedMonster = null;
+                this.isEngaged = false;
+                this.combatActive = false;
                 
+                // Game objects
                 this.player = null;
-                this.selectedTarget = null;
+                this.monster = null;
+                this.particles = [];
+                this.effects = [];
+                this.spells = [];
+                this.swordTrails = [];
                 
-                this.abilities = {
-                    Q: { cooldown: 0, maxCooldown: 8 },
-                    W: { cooldown: 0, maxCooldown: 12 },
-                    E: { cooldown: 0, maxCooldown: 16 },
-                    R: { cooldown: 0, maxCooldown: 45 }
+                // Animation states
+                this.wizardAnimation = {
+                    casting: false,
+                    castFrame: 0,
+                    staffGlow: 0
+                };
+                
+                this.knightAnimation = {
+                    attacking: false,
+                    attackFrame: 0,
+                    swordAngle: 0,
+                    attackSpeed: 1,
+                    fireIntensity: 0,
+                    comboCount: 0
+                };
+                
+                this.monsterData = {
+                    goblin: { name: 'Savage Goblin', health: 100, maxHealth: 100, level: 1, color: '#8B4513', size: 30 },
+                    orc: { name: 'Brutal Orc', health: 200, maxHealth: 200, level: 3, color: '#654321', size: 40 },
+                    troll: { name: 'Ancient Troll', health: 350, maxHealth: 350, level: 5, color: '#556B2F', size: 50 },
+                    dragon: { name: 'Fire Dragon', health: 500, maxHealth: 500, level: 10, color: '#DC143C', size: 70 },
+                    demon: { name: 'Shadow Demon', health: 750, maxHealth: 750, level: 15, color: '#800080', size: 60 },
+                    titan: { name: 'Stone Titan', health: 1000, maxHealth: 1000, level: 20, color: '#708090', size: 80 }
                 };
                 
                 this.init();
-            }
-            
-            init() {
-                this.setupCanvas();
-                this.createGameObjects();
-                this.bindEvents();
-                this.startGameLoop();
-                this.updateTimers();
             }
             
             setupCanvas() {
@@ -456,332 +376,567 @@
                 this.canvas.height = rect.height;
             }
             
-            createGameObjects() {
-                this.player = new Champion(400, 300, 'blue', true);
-                this.champions.push(this.player);
-                
-                this.champions.push(new Champion(200, 150, 'red'));
-                this.champions.push(new Champion(600, 450, 'red'));
-                this.champions.push(new Champion(300, 500, 'blue'));
-                this.champions.push(new Champion(700, 200, 'blue'));
-                
-                this.towers.push(new Tower(100, 100, 'blue'));
-                this.towers.push(new Tower(700, 500, 'red'));
-                this.towers.push(new Tower(200, 80, 'blue'));
-                this.towers.push(new Tower(600, 520, 'red'));
-                
-                this.createMinionWave('blue', 150, 150);
-                this.createMinionWave('red', 650, 450);
+            init() {
+                this.createPlayer();
+                this.startGameLoop();
+                this.setupEventListeners();
             }
             
-            createMinionWave(team, startX, startY) {
-                for (let i = 0; i < 4; i++) {
-                    this.minions.push(new Minion(
-                        startX + i * 25,
-                        startY + Math.random() * 30 - 15,
-                        team
-                    ));
-                }
+            setupEventListeners() {
+                document.getElementById('monster-select').addEventListener('change', (e) => {
+                    if (e.target.value) {
+                        this.selectMonster(e.target.value);
+                    }
+                });
+                
+                window.addEventListener('resize', () => this.setupCanvas());
             }
             
-            bindEvents() {
-                this.canvas.addEventListener('click', (e) => this.handleCanvasClick(e));
-                this.canvas.addEventListener('touchstart', (e) => this.handleTouch(e));
-                this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+            createPlayer() {
+                this.player = {
+                    x: this.canvas.width / 4,
+                    y: this.canvas.height / 2,
+                    health: 100,
+                    maxHealth: 100,
+                    mana: 100,
+                    maxMana: 100,
+                    size: 25
+                };
+            }
+            
+            selectMonster(monsterType) {
+                const data = this.monsterData[monsterType];
+                this.selectedMonster = {
+                    type: monsterType,
+                    x: (this.canvas.width * 3) / 4,
+                    y: this.canvas.height / 2,
+                    ...data,
+                    animationFrame: 0,
+                    isIdle: true
+                };
                 
-                document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+                document.getElementById('current-monster').textContent = data.name;
+                document.getElementById('monster-health').textContent = '100%';
+                document.getElementById('engage-btn').disabled = false;
                 
-                document.querySelectorAll('.ability-slot').forEach(slot => {
-                    slot.addEventListener('click', (e) => {
-                        const ability = slot.dataset.ability;
-                        this.castAbility(ability);
-                    });
+                this.logMessage(`Selected ${data.name} as target`, 'engage');
+            }
+            
+            createParticle(x, y, color, size = 3, vx = 0, vy = 0, life = 60) {
+                this.particles.push({
+                    x, y, color, size, vx, vy, life, maxLife: life, alpha: 1
                 });
             }
             
-            handleTouch(e) {
-                e.preventDefault();
-                const touch = e.touches[0];
-                const rect = this.canvas.getBoundingClientRect();
-                const x = touch.clientX - rect.left;
-                const y = touch.clientY - rect.top;
-                this.handleClick(x, y);
-            }
-            
-            handleCanvasClick(e) {
-                const rect = this.canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                this.handleClick(x, y);
-            }
-            
-            handleClick(x, y) {
-                let target = null;
-                for (let champion of this.champions) {
-                    if (champion.team !== this.player.team && 
-                        this.isPointInCircle(x, y, champion.x, champion.y, 25)) {
-                        target = champion;
-                        break;
-                    }
+            createExplosion(x, y, color = '#FF6B35', particleCount = 15) {
+                for (let i = 0; i < particleCount; i++) {
+                    const angle = (Math.PI * 2 * i) / particleCount;
+                    const speed = 3 + Math.random() * 4;
+                    const vx = Math.cos(angle) * speed;
+                    const vy = Math.sin(angle) * speed;
+                    this.createParticle(x, y, color, 4 + Math.random() * 3, vx, vy, 40 + Math.random() * 20);
                 }
+            }
+            
+            createMagicSpell(startX, startY, targetX, targetY) {
+                const spell = {
+                    x: startX,
+                    y: startY,
+                    targetX,
+                    targetY,
+                    speed: 8,
+                    size: 12,
+                    trail: [],
+                    color: '#9932CC',
+                    glowSize: 0,
+                    active: true
+                };
                 
-                if (target) {
-                    this.selectedTarget = target;
-                    this.player.target = target;
-                    this.addChatMessage('ally', 'Attacking enemy!');
-                } else {
-                    this.player.moveTo(x, y);
-                    this.selectedTarget = null;
-                }
-            }
-            
-            handleMouseMove(e) {
-                const rect = this.canvas.getBoundingClientRect();
-                this.mouseX = e.clientX - rect.left;
-                this.mouseY = e.clientY - rect.top;
-            }
-            
-            handleKeyPress(e) {
-                const key = e.key.toUpperCase();
-                if (['Q', 'W', 'E', 'R'].includes(key)) {
-                    this.castAbility(key);
-                    e.preventDefault();
-                }
-            }
-            
-            castAbility(ability) {
-                if (this.abilities[ability].cooldown > 0) {
-                    return;
-                }
+                // Calculate direction
+                const dx = targetX - startX;
+                const dy = targetY - startY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                spell.vx = (dx / distance) * spell.speed;
+                spell.vy = (dy / distance) * spell.speed;
                 
-                this.abilities[ability].cooldown = this.abilities[ability].maxCooldown;
-                this.updateAbilityCooldown(ability);
-                
-                switch(ability) {
-                    case 'Q':
-                        this.castFireball();
-                        break;
-                    case 'W':
-                        this.castShield();
-                        break;
-                    case 'E':
-                        this.castDash();
-                        break;
-                    case 'R':
-                        this.castUltimate();
-                        break;
-                }
-                
-                this.addChatMessage('ally', `Cast ${ability} ability!`);
+                this.spells.push(spell);
             }
             
-            castFireball() {
-                if (this.selectedTarget) {
-                    this.projectiles.push(new Projectile(
-                        this.player.x, this.player.y,
-                        this.selectedTarget.x, this.selectedTarget.y,
-                        'fireball'
-                    ));
-                }
+            createSwordTrail(x, y, angle, intensity = 1) {
+                const length = 40 * intensity;
+                const trail = {
+                    x, y, angle, length, 
+                    life: 15, 
+                    maxLife: 15, 
+                    intensity,
+                    color: intensity > 2 ? '#FF4500' : '#FFD700'
+                };
+                this.swordTrails.push(trail);
             }
             
-            castShield() {
-                this.effects.push(new Effect(this.player.x, this.player.y, 'shield', 3000));
-                this.player.health = Math.min(this.player.maxHealth, this.player.health + 200);
+            updateParticles() {
+                this.particles = this.particles.filter(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.vy += 0.1; // gravity
+                    particle.vx *= 0.98; // air resistance
+                    particle.life--;
+                    particle.alpha = particle.life / particle.maxLife;
+                    particle.size *= 0.98;
+                    return particle.life > 0;
+                });
             }
             
-            castDash() {
-                if (this.mouseX && this.mouseY) {
-                    const dx = this.mouseX - this.player.x;
-                    const dy = this.mouseY - this.player.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const dashDistance = Math.min(distance, 120);
+            updateSpells() {
+                this.spells = this.spells.filter(spell => {
+                    if (!spell.active) return false;
                     
-                    this.player.x += (dx / distance) * dashDistance;
-                    this.player.y += (dy / distance) * dashDistance;
-                    this.effects.push(new Effect(this.player.x, this.player.y, 'dash', 500));
-                }
-            }
-            
-            castUltimate() {
-                this.effects.push(new Effect(this.player.x, this.player.y, 'ultimate', 2000));
-                for (let champion of this.champions) {
-                    if (champion.team !== this.player.team) {
-                        const distance = this.getDistance(this.player, champion);
-                        if (distance < 150) {
-                            champion.takeDamage(300);
+                    // Add to trail
+                    spell.trail.push({x: spell.x, y: spell.y});
+                    if (spell.trail.length > 8) spell.trail.shift();
+                    
+                    spell.x += spell.vx;
+                    spell.y += spell.vy;
+                    spell.glowSize = Math.sin(Date.now() * 0.01) * 3 + 5;
+                    
+                    // Sparkle particles
+                    if (Math.random() < 0.3) {
+                        this.createParticle(
+                            spell.x + (Math.random() - 0.5) * 10,
+                            spell.y + (Math.random() - 0.5) * 10,
+                            ['#9932CC', '#FF69B4', '#00FFFF'][Math.floor(Math.random() * 3)],
+                            2 + Math.random() * 2,
+                            (Math.random() - 0.5) * 2,
+                            (Math.random() - 0.5) * 2,
+                            20
+                        );
+                    }
+                    
+                    // Check collision with monster
+                    if (this.selectedMonster && spell.active) {
+                        const dx = spell.x - this.selectedMonster.x;
+                        const dy = spell.y - this.selectedMonster.y;
+                        if (Math.sqrt(dx * dx + dy * dy) < this.selectedMonster.size) {
+                            this.createExplosion(spell.x, spell.y, '#9932CC', 20);
+                            this.damageMonster(25 + Math.random() * 25);
+                            spell.active = false;
+                            return false;
                         }
                     }
+                    
+                    // Remove if off screen
+                    return spell.x > -50 && spell.x < this.canvas.width + 50 && 
+                           spell.y > -50 && spell.y < this.canvas.height + 50;
+                });
+            }
+            
+            updateSwordTrails() {
+                this.swordTrails = this.swordTrails.filter(trail => {
+                    trail.life--;
+                    return trail.life > 0;
+                });
+            }
+            
+            damageMonster(damage) {
+                if (!this.selectedMonster) return;
+                
+                this.selectedMonster.health -= damage;
+                if (this.selectedMonster.health < 0) this.selectedMonster.health = 0;
+                
+                const healthPercent = (this.selectedMonster.health / this.selectedMonster.maxHealth) * 100;
+                document.getElementById('monster-health').textContent = `${Math.round(healthPercent)}%`;
+                
+                this.logMessage(`Dealt ${Math.round(damage)} damage!`, 'damage');
+                
+                // Monster death
+                if (this.selectedMonster.health <= 0) {
+                    this.createExplosion(this.selectedMonster.x, this.selectedMonster.y, '#FFD700', 30);
+                    this.logMessage(`${this.selectedMonster.name} defeated!`, 'engage');
+                    this.selectedMonster = null;
+                    this.isEngaged = false;
+                    this.combatActive = false;
+                    document.getElementById('current-monster').textContent = 'None Selected';
+                    document.getElementById('monster-health').textContent = '100%';
+                    document.getElementById('engage-btn').disabled = true;
+                    document.getElementById('attack-btn').disabled = true;
+                    document.getElementById('cast-btn').disabled = true;
                 }
             }
             
-            updateAbilityCooldown(ability) {
-                const slot = document.querySelector(`[data-ability="${ability}"]`);
-                const overlay = slot.querySelector('.cooldown-overlay');
-                overlay.style.opacity = '1';
+            drawPlayer() {
+                if (!this.player) return;
                 
-                const interval = setInterval(() => {
-                    const progress = 1 - (this.abilities[ability].cooldown / this.abilities[ability].maxCooldown);
-                    overlay.style.background = `conic-gradient(transparent ${progress * 360}deg, rgba(0,0,0,0.7) 0deg)`;
+                const ctx = this.ctx;
+                const player = this.player;
+                
+                if (this.currentCharacter === 'wizard') {
+                    // Wizard body
+                    ctx.fillStyle = '#4B0082';
+                    ctx.beginPath();
+                    ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
+                    ctx.fill();
                     
-                    if (this.abilities[ability].cooldown <= 0) {
-                        overlay.style.opacity = '0';
-                        slot.classList.add('ready');
-                        setTimeout(() => slot.classList.remove('ready'), 1000);
-                        clearInterval(interval);
+                    // Wizard hat
+                    ctx.fillStyle = '#191970';
+                    ctx.beginPath();
+                    ctx.moveTo(player.x - 15, player.y - 20);
+                    ctx.lineTo(player.x + 15, player.y - 20);
+                    ctx.lineTo(player.x, player.y - 40);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Staff
+                    const staffX = player.x + 20;
+                    const staffY = player.y - 10;
+                    const staffEndY = staffY - 50;
+                    
+                    ctx.strokeStyle = '#8B4513';
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.moveTo(staffX, staffY);
+                    ctx.lineTo(staffX, staffEndY);
+                    ctx.stroke();
+                    
+                    // Staff orb with glow
+                    const glowSize = this.wizardAnimation.staffGlow + 8;
+                    const gradient = ctx.createRadialGradient(staffX, staffEndY, 0, staffX, staffEndY, glowSize);
+                    gradient.addColorStop(0, '#9932CC');
+                    gradient.addColorStop(0.5, '#FF69B4');
+                    gradient.addColorStop(1, 'rgba(153, 50, 204, 0)');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(staffX, staffEndY, glowSize, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Casting animation
+                    if (this.wizardAnimation.casting) {
+                        this.wizardAnimation.castFrame++;
+                        this.wizardAnimation.staffGlow = Math.sin(this.wizardAnimation.castFrame * 0.3) * 5 + 5;
+                        
+                        // Magic sparkles around wizard
+                        for (let i = 0; i < 3; i++) {
+                            const angle = this.wizardAnimation.castFrame * 0.1 + (i * Math.PI * 2 / 3);
+                            const sparkleX = player.x + Math.cos(angle) * 30;
+                            const sparkleY = player.y + Math.sin(angle) * 30;
+                            this.createParticle(sparkleX, sparkleY, '#9932CC', 3, 0, 0, 10);
+                        }
+                        
+                        if (this.wizardAnimation.castFrame > 30) {
+                            this.wizardAnimation.casting = false;
+                            this.wizardAnimation.castFrame = 0;
+                        }
+                    } else {
+                        this.wizardAnimation.staffGlow = Math.sin(Date.now() * 0.005) * 2 + 3;
                     }
-                }, 100);
+                    
+                } else if (this.currentCharacter === 'knight') {
+                    // Knight body
+                    ctx.fillStyle = '#C0C0C0';
+                    ctx.beginPath();
+                    ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Knight helmet
+                    ctx.fillStyle = '#A9A9A9';
+                    ctx.beginPath();
+                    ctx.arc(player.x, player.y - 10, 20, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Sword
+                    const swordX = player.x + 25;
+                    const swordY = player.y - 5;
+                    const angle = this.knightAnimation.swordAngle;
+                    
+                    ctx.save();
+                    ctx.translate(swordX, swordY);
+                    ctx.rotate(angle);
+                    
+                    // Sword blade with fire effect
+                    const fireIntensity = this.knightAnimation.fireIntensity;
+                    if (fireIntensity > 0) {
+                        // Fire glow
+                        const fireGradient = ctx.createLinearGradient(0, -30, 0, 0);
+                        fireGradient.addColorStop(0, `rgba(255, ${100 + fireIntensity * 155}, 0, ${fireIntensity})`);
+                        fireGradient.addColorStop(1, `rgba(255, 0, 0, ${fireIntensity * 0.5})`);
+                        
+                        ctx.fillStyle = fireGradient;
+                        ctx.fillRect(-3, -35, 6, 35);
+                        
+                        // Fire particles
+                        for (let i = 0; i < fireIntensity * 3; i++) {
+                            const fx = (Math.random() - 0.5) * 8;
+                            const fy = -35 + Math.random() * 35;
+                            this.createParticle(
+                                swordX + fx, swordY + fy,
+                                ['#FF4500', '#FF6347', '#FFD700'][Math.floor(Math.random() * 3)],
+                                2, 0, -2, 15
+                            );
+                        }
+                    }
+                    
+                    ctx.fillStyle = fireIntensity > 0.5 ? '#FFD700' : '#D3D3D3';
+                    ctx.fillRect(-2, -30, 4, 30);
+                    
+                    // Sword hilt
+                    ctx.fillStyle = '#8B4513';
+                    ctx.fillRect(-3, -5, 6, 10);
+                    
+                    ctx.restore();
+                    
+                    // Attack animation
+                    if (this.knightAnimation.attacking) {
+                        this.knightAnimation.attackFrame++;
+                        const attackProgress = this.knightAnimation.attackFrame / 20;
+                        this.knightAnimation.swordAngle = Math.sin(attackProgress * Math.PI * this.knightAnimation.attackSpeed) * Math.PI / 2;
+                        
+                        // Increase attack speed and fire with combo
+                        this.knightAnimation.attackSpeed += 0.05;
+                        this.knightAnimation.fireIntensity = Math.min(1, this.knightAnimation.fireIntensity + 0.1);
+                        
+                        // Create sword trail
+                        this.createSwordTrail(swordX, swordY, angle, this.knightAnimation.fireIntensity + 1);
+                        
+                        if (this.knightAnimation.attackFrame > 20) {
+                            this.knightAnimation.attacking = false;
+                            this.knightAnimation.attackFrame = 0;
+                            this.knightAnimation.comboCount++;
+                            
+                            // Reset combo after pause
+                            setTimeout(() => {
+                                if (!this.knightAnimation.attacking) {
+                                    this.knightAnimation.attackSpeed = 1;
+                                    this.knightAnimation.fireIntensity *= 0.8;
+                                    this.knightAnimation.comboCount = 0;
+                                }
+                            }, 1000);
+                        }
+                    } else {
+                        this.knightAnimation.swordAngle = 0;
+                        this.knightAnimation.fireIntensity *= 0.95;
+                    }
+                }
+                
+                // Player name tag
+                ctx.fillStyle = '#3498db';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(this.currentCharacter.toUpperCase(), player.x, player.y - player.size - 50);
+            }
+            
+            drawMonster() {
+                if (!this.selectedMonster) return;
+                
+                const ctx = this.ctx;
+                const monster = this.selectedMonster;
+                
+                // Monster body with animation
+                monster.animationFrame += 0.1;
+                const bounce = Math.sin(monster.animationFrame) * 3;
+                
+                ctx.fillStyle = monster.color;
+                ctx.beginPath();
+                ctx.arc(monster.x, monster.y + bounce, monster.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Monster eyes
+                ctx.fillStyle = '#FF0000';
+                ctx.beginPath();
+                ctx.arc(monster.x - 8, monster.y - 5 + bounce, 3, 0, Math.PI * 2);
+                ctx.arc(monster.x + 8, monster.y - 5 + bounce, 3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Monster features based on type
+                switch(monster.type) {
+                    case 'dragon':
+                        // Dragon wings
+                        ctx.fillStyle = '#8B0000';
+                        ctx.beginPath();
+                        ctx.ellipse(monster.x - 40, monster.y + bounce, 25, 15, Math.PI/4, 0, Math.PI * 2);
+                        ctx.ellipse(monster.x + 40, monster.y + bounce, 25, 15, -Math.PI/4, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'demon':
+                        // Demon horns
+                        ctx.fillStyle = '#4B0000';
+                        ctx.beginPath();
+                        ctx.moveTo(monster.x - 15, monster.y - 15 + bounce);
+                        ctx.lineTo(monster.x - 20, monster.y - 35 + bounce);
+                        ctx.lineTo(monster.x - 10, monster.y - 30 + bounce);
+                        ctx.closePath();
+                        ctx.moveTo(monster.x + 15, monster.y - 15 + bounce);
+                        ctx.lineTo(monster.x + 20, monster.y - 35 + bounce);
+                        ctx.lineTo(monster.x + 10, monster.y - 30 + bounce);
+                        ctx.closePath();
+                        ctx.fill();
+                        break;
+                }
+                
+                // Health bar
+                const barWidth = monster.size * 2;
+                const barHeight = 6;
+                const healthPercent = monster.health / monster.maxHealth;
+                
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillRect(monster.x - barWidth/2, monster.y - monster.size - 20, barWidth, barHeight);
+                
+                ctx.fillStyle = healthPercent > 0.5 ? '#27ae60' : healthPercent > 0.25 ? '#f39c12' : '#e74c3c';
+                ctx.fillRect(monster.x - barWidth/2, monster.y - monster.size - 20, barWidth * healthPercent, barHeight);
+                
+                // Monster name and level
+                ctx.fillStyle = '#e74c3c';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${monster.name} (Lv.${monster.level})`, monster.x, monster.y - monster.size - 35);
+            }
+            
+            drawSpells() {
+                this.spells.forEach(spell => {
+                    const ctx = this.ctx;
+                    
+                    // Spell trail
+                    spell.trail.forEach((point, index) => {
+                        const alpha = index / spell.trail.length;
+                        const size = (index / spell.trail.length) * spell.size;
+                        
+                        ctx.globalAlpha = alpha * 0.7;
+                        ctx.fillStyle = spell.color;
+                        ctx.beginPath();
+                        ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
+                        ctx.fill();
+                    });
+                    
+                    // Main spell projectile
+                    ctx.globalAlpha = 1;
+                    const gradient = ctx.createRadialGradient(spell.x, spell.y, 0, spell.x, spell.y, spell.size + spell.glowSize);
+                    gradient.addColorStop(0, spell.color);
+                    gradient.addColorStop(0.5, '#FF69B4');
+                    gradient.addColorStop(1, 'rgba(153, 50, 204, 0)');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(spell.x, spell.y, spell.size + spell.glowSize, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Core
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.beginPath();
+                    ctx.arc(spell.x, spell.y, spell.size * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+            
+            drawSwordTrails() {
+                this.swordTrails.forEach(trail => {
+                    const ctx = this.ctx;
+                    const alpha = trail.life / trail.maxLife;
+                    
+                    ctx.globalAlpha = alpha;
+                    ctx.strokeStyle = trail.color;
+                    ctx.lineWidth = 8 * trail.intensity;
+                    ctx.lineCap = 'round';
+                    
+                    ctx.save();
+                    ctx.translate(trail.x, trail.y);
+                    ctx.rotate(trail.angle);
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(-trail.length/2, 0);
+                    ctx.lineTo(trail.length/2, 0);
+                    ctx.stroke();
+                    
+                    ctx.restore();
+                    ctx.globalAlpha = 1;
+                });
+            }
+            
+            drawParticles() {
+                this.particles.forEach(particle => {
+                    this.ctx.globalAlpha = particle.alpha;
+                    this.ctx.fillStyle = particle.color;
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+                });
+                this.ctx.globalAlpha = 1;
+            }
+            
+            drawBackground() {
+                const ctx = this.ctx;
+                
+                // Animated background
+                const time = Date.now() * 0.001;
+                
+                // Energy lines
+                ctx.strokeStyle = 'rgba(52, 152, 219, 0.3)';
+                ctx.lineWidth = 2;
+                for (let i = 0; i < 5; i++) {
+                    const y = (this.canvas.height / 6) * (i + 1) + Math.sin(time + i) * 20;
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(this.canvas.width, y);
+                    ctx.stroke();
+                }
+                
+                // Floating particles
+                if (Math.random() < 0.1) {
+                    this.createParticle(
+                        Math.random() * this.canvas.width,
+                        this.canvas.height + 10,
+                        ['#3498db', '#9b59b6', '#f39c12'][Math.floor(Math.random() * 3)],
+                        1 + Math.random() * 2,
+                        (Math.random() - 0.5) * 0.5,
+                        -0.5 - Math.random() * 0.5,
+                        120 + Math.random() * 60
+                    );
+                }
+                
+                // Center combat area highlight
+                if (this.combatActive) {
+                    const centerX = this.canvas.width / 2;
+                    const centerY = this.canvas.height / 2;
+                    const radius = 150 + Math.sin(time * 2) * 20;
+                    
+                    const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+                    gradient.addColorStop(0, 'rgba(231, 76, 60, 0.1)');
+                    gradient.addColorStop(1, 'rgba(231, 76, 60, 0)');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            logMessage(message, type = 'info') {
+                const logEntries = document.getElementById('log-entries');
+                const entry = document.createElement('div');
+                entry.className = `log-entry ${type}`;
+                entry.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+                logEntries.appendChild(entry);
+                logEntries.scrollTop = logEntries.scrollHeight;
+                
+                // Keep only last 20 entries
+                while (logEntries.children.length > 20) {
+                    logEntries.removeChild(logEntries.firstChild);
+                }
             }
             
             update() {
-                this.champions.forEach(champion => champion.update());
-                this.minions.forEach(minion => minion.update());
-                this.projectiles.forEach(projectile => projectile.update());
-                this.effects = this.effects.filter(effect => effect.update());
-                
-                for (let ability in this.abilities) {
-                    if (this.abilities[ability].cooldown > 0) {
-                        this.abilities[ability].cooldown -= 1/60;
-                    }
-                }
-                
-                this.projectiles = this.projectiles.filter(p => !p.shouldRemove);
-                this.updateAI();
-            }
-            
-            updateAI() {
-                this.champions.forEach(champion => {
-                    if (!champion.isPlayer && Math.random() < 0.015) {
-                        const enemies = this.champions.filter(c => c.team !== champion.team);
-                        if (enemies.length > 0) {
-                            const target = enemies[Math.floor(Math.random() * enemies.length)];
-                            champion.moveTo(target.x + Math.random() * 80 - 40, target.y + Math.random() * 80 - 40);
-                        }
-                    }
-                });
+                this.updateParticles();
+                this.updateSpells();
+                this.updateSwordTrails();
             }
             
             render() {
-                this.ctx.fillStyle = '#1a252f';
-                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                 
-                this.drawMap();
-                
-                this.towers.forEach(tower => tower.render(this.ctx));
-                this.minions.forEach(minion => minion.render(this.ctx));
-                this.champions.forEach(champion => champion.render(this.ctx));
-                this.projectiles.forEach(projectile => projectile.render(this.ctx));
-                this.effects.forEach(effect => effect.render(this.ctx));
-                
-                this.drawTargetIndicator();
-                this.drawMinimap();
-            }
-            
-            drawMap() {
-                this.ctx.strokeStyle = '#3498db';
-                this.ctx.lineWidth = 15;
-                this.ctx.setLineDash([15, 8]);
-                
-                this.ctx.beginPath();
-                this.ctx.moveTo(0, 80);
-                this.ctx.lineTo(this.canvas.width, 80);
-                this.ctx.stroke();
-                
-                this.ctx.beginPath();
-                this.ctx.moveTo(0, this.canvas.height / 2);
-                this.ctx.lineTo(this.canvas.width, this.canvas.height / 2);
-                this.ctx.stroke();
-                
-                this.ctx.beginPath();
-                this.ctx.moveTo(0, this.canvas.height - 80);
-                this.ctx.lineTo(this.canvas.width, this.canvas.height - 80);
-                this.ctx.stroke();
-                
-                this.ctx.setLineDash([]);
-                
-                this.ctx.fillStyle = 'rgba(46, 204, 113, 0.1)';
-                this.ctx.fillRect(150, 150, 200, 150);
-                this.ctx.fillRect(450, 300, 200, 150);
-                
-                this.ctx.fillStyle = 'rgba(52, 152, 219, 0.3)';
-                this.ctx.fillRect(0, this.canvas.height / 2 - 40, this.canvas.width, 80);
-            }
-            
-            drawTargetIndicator() {
-                if (this.selectedTarget && !this.selectedTarget.isDead) {
-                    this.ctx.strokeStyle = '#e74c3c';
-                    this.ctx.lineWidth = 2;
-                    this.ctx.setLineDash([4, 4]);
-                    this.ctx.beginPath();
-                    this.ctx.arc(this.selectedTarget.x, this.selectedTarget.y, 30, 0, Math.PI * 2);
-                    this.ctx.stroke();
-                    this.ctx.setLineDash([]);
-                }
-            }
-            
-            drawMinimap() {
-                this.minimapCtx.fillStyle = '#2c3e50';
-                this.minimapCtx.fillRect(0, 0, this.minimap.width, this.minimap.height);
-                
-                const scaleX = this.minimap.width / this.canvas.width;
-                const scaleY = this.minimap.height / this.canvas.height;
-                
-                this.champions.forEach(champion => {
-                    if (!champion.isDead) {
-                        this.minimapCtx.fillStyle = champion.team === 'blue' ? '#3498db' : '#e74c3c';
-                        this.minimapCtx.beginPath();
-                        this.minimapCtx.arc(
-                            champion.x * scaleX,
-                            champion.y * scaleY,
-                            2, 0, Math.PI * 2
-                        );
-                        this.minimapCtx.fill();
-                    }
-                });
-                
-                this.towers.forEach(tower => {
-                    if (!tower.isDead) {
-                        this.minimapCtx.fillStyle = tower.team === 'blue' ? '#3498db' : '#e74c3c';
-                        this.minimapCtx.fillRect(
-                            tower.x * scaleX - 1,
-                            tower.y * scaleY - 1,
-                            3, 3
-                        );
-                    }
-                });
-            }
-            
-            updateTimers() {
-                setInterval(() => {
-                    this.gameTime++;
-                    const minutes = Math.floor(this.gameTime / 60);
-                    const seconds = this.gameTime % 60;
-                    document.getElementById('timer').textContent = 
-                        `${minutes}:${seconds.toString().padStart(2, '0')}`;
-                    
-                    if (this.dragonTimer > 0) {
-                        this.dragonTimer--;
-                        const dMinutes = Math.floor(this.dragonTimer / 60);
-                        const dSeconds = this.dragonTimer % 60;
-                        document.getElementById('dragon-timer').textContent = 
-                            `${dMinutes}:${dSeconds.toString().padStart(2, '0')}`;
-                    } else {
-                        document.getElementById('dragon-timer').textContent = 'SPAWNED';
-                    }
-                }, 1000);
-            }
-            
-            addChatMessage(type, message) {
-                const chatMessages = document.getElementById('chat-messages');
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `chat-message ${type}`;
-                messageDiv.textContent = message;
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                
-                if (chatMessages.children.length > 8) {
-                    chatMessages.removeChild(chatMessages.firstChild);
-                }
+                this.drawBackground();
+                this.drawParticles();
+                this.drawSwordTrails();
+                this.drawSpells();
+                this.drawPlayer();
+                this.drawMonster();
             }
             
             startGameLoop() {
@@ -792,313 +947,141 @@
                 };
                 gameLoop();
             }
-            
-            getDistance(obj1, obj2) {
-                const dx = obj1.x - obj2.x;
-                const dy = obj1.y - obj2.y;
-                return Math.sqrt(dx * dx + dy * dy);
-            }
-            
-            isPointInCircle(px, py, cx, cy, radius) {
-                const dx = px - cx;
-                const dy = py - cy;
-                return (dx * dx + dy * dy) <= (radius * radius);
-            }
-        }
-
-        class Champion {
-            constructor(x, y, team, isPlayer = false) {
-                this.x = x;
-                this.y = y;
-                this.team = team;
-                this.isPlayer = isPlayer;
-                this.health = 1875;
-                this.maxHealth = 2500;
-                this.mana = 420;
-                this.maxMana = 700;
-                this.targetX = x;
-                this.targetY = y;
-                this.speed = 1.5;
-                this.size = 15;
-                this.isDead = false;
-                this.target = null;
-            }
-            
-            update() {
-                if (this.isDead) return;
-                
-                const dx = this.targetX - this.x;
-                const dy = this.targetY - this.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance > 3) {
-                    this.x += (dx / distance) * this.speed;
-                    this.y += (dy / distance) * this.speed;
-                }
-                
-                if (this.isPlayer) {
-                    const healthPercent = (this.health / this.maxHealth) * 100;
-                    const manaPercent = (this.mana / this.maxMana) * 100;
-                    
-                    document.querySelector('.health-fill').style.width = `${healthPercent}%`;
-                    document.querySelector('.mana-fill').style.width = `${manaPercent}%`;
-                    document.querySelector('.health-text').textContent = `${this.health}/${this.maxHealth}`;
-                    document.querySelector('.mana-text').textContent = `${this.mana}/${this.maxMana}`;
-                }
-            }
-            
-            moveTo(x, y) {
-                this.targetX = x;
-                this.targetY = y;
-            }
-            
-            takeDamage(amount) {
-                this.health -= amount;
-                if (this.health <= 0) {
-                    this.health = 0;
-                    this.isDead = true;
-                }
-            }
-            
-            render(ctx) {
-                if (this.isDead) return;
-                
-                ctx.fillStyle = this.team === 'blue' ? '#3498db' : '#e74c3c';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                
-                const barWidth = 30;
-                const barHeight = 4;
-                const healthPercent = this.health / this.maxHealth;
-                
-                ctx.fillStyle = '#2c3e50';
-                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 10, barWidth, barHeight);
-                
-                ctx.fillStyle = '#e74c3c';
-                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 10, barWidth * healthPercent, barHeight);
-                
-                if (this.isPlayer) {
-                    ctx.strokeStyle = '#f39c12';
-                    ctx.lineWidth = 2;
-                    ctx.setLineDash([2, 2]);
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.size + 3, 0, Math.PI * 2);
-                    ctx.stroke();
-                    ctx.setLineDash([]);
-                }
-            }
-        }
-
-        class Minion {
-            constructor(x, y, team) {
-                this.x = x;
-                this.y = y;
-                this.team = team;
-                this.health = 80;
-                this.maxHealth = 80;
-                this.speed = 0.8;
-                this.size = 6;
-                this.isDead = false;
-                this.targetX = team === 'blue' ? x + 300 : x - 300;
-                this.targetY = y;
-            }
-            
-            update() {
-                if (this.isDead) return;
-                
-                const dx = this.targetX - this.x;
-                const dy = this.targetY - this.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance > 3) {
-                    this.x += (dx / distance) * this.speed;
-                    this.y += (dy / distance) * this.speed;
-                }
-            }
-            
-            render(ctx) {
-                if (this.isDead) return;
-                
-                ctx.fillStyle = this.team === 'blue' ? '#85c1e9' : '#f1948a';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        class Tower {
-            constructor(x, y, team) {
-                this.x = x;
-                this.y = y;
-                this.team = team;
-                this.health = 1500;
-                this.maxHealth = 1500;
-                this.size = 20;
-                this.isDead = false;
-            }
-            
-            render(ctx) {
-                if (this.isDead) return;
-                
-                ctx.fillStyle = this.team === 'blue' ? '#2980b9' : '#c0392b';
-                ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
-                
-                ctx.fillStyle = this.team === 'blue' ? '#3498db' : '#e74c3c';
-                ctx.beginPath();
-                ctx.moveTo(this.x, this.y - this.size);
-                ctx.lineTo(this.x - this.size/3, this.y - this.size/2);
-                ctx.lineTo(this.x + this.size/3, this.y - this.size/2);
-                ctx.closePath();
-                ctx.fill();
-                
-                const barWidth = 35;
-                const barHeight = 5;
-                const healthPercent = this.health / this.maxHealth;
-                
-                ctx.fillStyle = '#2c3e50';
-                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 15, barWidth, barHeight);
-                
-                ctx.fillStyle = '#e74c3c';
-                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 15, barWidth * healthPercent, barHeight);
-            }
-        }
-
-        class Projectile {
-            constructor(startX, startY, targetX, targetY, type) {
-                this.x = startX;
-                this.y = startY;
-                this.targetX = targetX;
-                this.targetY = targetY;
-                this.type = type;
-                this.speed = 6;
-                this.shouldRemove = false;
-                
-                const dx = targetX - startX;
-                const dy = targetY - startY;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                this.vx = (dx / distance) * this.speed;
-                this.vy = (dy / distance) * this.speed;
-            }
-            
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                
-                const distance = Math.sqrt((this.targetX - this.x) ** 2 + (this.targetY - this.y) ** 2);
-                if (distance < 15) {
-                    this.shouldRemove = true;
-                }
-            }
-            
-            render(ctx) {
-                ctx.fillStyle = this.type === 'fireball' ? '#e67e22' : '#3498db';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
-                ctx.fill();
-                
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = ctx.fillStyle;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            }
-        }
-
-        class Effect {
-            constructor(x, y, type, duration) {
-                this.x = x;
-                this.y = y;
-                this.type = type;
-                this.duration = duration;
-                this.age = 0;
-                this.size = 0;
-            }
-            
-            update() {
-                this.age += 16;
-                this.size = (this.age / this.duration) * 80;
-                
-                return this.age < this.duration;
-            }
-            
-            render(ctx) {
-                const alpha = 1 - (this.age / this.duration);
-                
-                switch(this.type) {
-                    case 'shield':
-                        ctx.strokeStyle = `rgba(52, 152, 219, ${alpha})`;
-                        ctx.lineWidth = 2;
-                        ctx.beginPath();
-                        ctx.arc(this.x, this.y, 25, 0, Math.PI * 2);
-                        ctx.stroke();
-                        break;
-                        
-                    case 'dash':
-                        ctx.fillStyle = `rgba(241, 196, 15, ${alpha})`;
-                        ctx.beginPath();
-                        ctx.arc(this.x, this.y, this.size / 3, 0, Math.PI * 2);
-                        ctx.fill();
-                        break;
-                        
-                    case 'ultimate':
-                        ctx.strokeStyle = `rgba(155, 89, 182, ${alpha})`;
-                        ctx.lineWidth = 3;
-                        ctx.beginPath();
-                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                        ctx.stroke();
-                        break;
-                }
-            }
-        }
-
-        // Mobile-specific functions
-        function closeInstructions() {
-            document.getElementById('instructions').classList.add('hidden');
         }
         
-        function castAbilityTouch(ability) {
-            if (window.game) {
-                window.game.castAbility(ability);
-            }
-        }
-        
-        // Prevent zoom on double tap
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function (event) {
-            const now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                event.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
-
-        // Initialize the game
+        // Global game instance
         let game;
-        document.addEventListener('DOMContentLoaded', () => {
-            game = new MOBAGame();
-            window.game = game;
-            
-            setInterval(() => {
-                game.addChatMessage('system', 'Minion wave spawned!');
-                game.createMinionWave('blue', 150, 150);
-                game.createMinionWave('red', 650, 450);
-            }, 25000);
-            
-            setInterval(() => {
-                const events = [
-                    'Enemy spotted in jungle!',
-                    'Dragon fight starting!',
-                    'Baron attempt!',
-                    'Tower under attack!',
-                    'Champion needs help!'
-                ];
-                
-                if (Math.random() < 0.25) {
-                    const randomEvent = events[Math.floor(Math.random() * events.length)];
-                    game.addChatMessage('system', randomEvent);
-                }
-            }, 12000);
+        
+        // Initialize game when page loads
+        window.addEventListener('load', () => {
+            game = new PvECombatGame();
         });
+        
+        // Combat functions
+        function selectCharacter(character) {
+            if (!game) return;
+            
+            game.currentCharacter = character;
+            document.getElementById('current-character').textContent = character;
+            
+            // Update UI
+            document.querySelectorAll('.character-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            game.logMessage(`Selected ${character} character`, 'engage');
+        }
+        
+        function engageMonster() {
+            if (!game || !game.selectedMonster) return;
+            
+            game.isEngaged = true;
+            game.combatActive = true;
+            
+            document.getElementById('attack-btn').disabled = false;
+            document.getElementById('cast-btn').disabled = false;
+            document.getElementById('engage-btn').disabled = true;
+            
+            game.logMessage(`Engaged in combat with ${game.selectedMonster.name}!`, 'engage');
+            
+            // Add some epic battle particles
+            for (let i = 0; i < 20; i++) {
+                game.createParticle(
+                    game.canvas.width / 2 + (Math.random() - 0.5) * 200,
+                    game.canvas.height / 2 + (Math.random() - 0.5) * 200,
+                    '#f39c12',
+                    3 + Math.random() * 3,
+                    (Math.random() - 0.5) * 4,
+                    (Math.random() - 0.5) * 4,
+                    60
+                );
+            }
+        }
+        
+        function attackMonster() {
+            if (!game || !game.isEngaged || !game.selectedMonster) return;
+            
+            if (game.currentCharacter === 'knight') {
+                game.knightAnimation.attacking = true;
+                game.knightAnimation.attackFrame = 0;
+                
+                // Deal damage
+                setTimeout(() => {
+                    const damage = 15 + Math.random() * 20 + (game.knightAnimation.comboCount * 5);
+                    game.damageMonster(damage);
+                    
+                    // Create sword slash effect
+                    game.createExplosion(
+                        game.selectedMonster.x,
+                        game.selectedMonster.y,
+                        game.knightAnimation.fireIntensity > 0.5 ? '#FF4500' : '#FFD700',
+                        10
+                    );
+                }, 150);
+                
+                game.logMessage(`Knight attacks with blazing sword!`, 'damage');
+            } else {
+                // Basic wizard attack
+                game.createMagicSpell(
+                    game.player.x + 20,
+                    game.player.y - 40,
+                    game.selectedMonster.x,
+                    game.selectedMonster.y
+                );
+                
+                game.logMessage(`Wizard casts magic missile!`, 'cast');
+            }
+        }
+        
+        function castSpell() {
+            if (!game || !game.isEngaged || !game.selectedMonster) return;
+            
+            if (game.currentCharacter === 'wizard') {
+                game.wizardAnimation.casting = true;
+                game.wizardAnimation.castFrame = 0;
+                
+                // Create multiple spell projectiles in a fan pattern
+                setTimeout(() => {
+                    const angles = [-0.3, 0, 0.3];
+                    angles.forEach((angleOffset, index) => {
+                        setTimeout(() => {
+                            const targetX = game.selectedMonster.x + Math.sin(angleOffset) * 50;
+                            const targetY = game.selectedMonster.y + Math.cos(angleOffset) * 50;
+                            
+                            game.createMagicSpell(
+                                game.player.x + 20,
+                                game.player.y - 40,
+                                targetX,
+                                targetY
+                            );
+                        }, index * 100);
+                    });
+                }, 200);
+                
+                game.logMessage(`Wizard casts ARCANE BARRAGE!`, 'cast');
+            } else {
+                // Knight special attack
+                game.knightAnimation.attacking = true;
+                game.knightAnimation.attackFrame = 0;
+                game.knightAnimation.attackSpeed = 3;
+                game.knightAnimation.fireIntensity = 1;
+                
+                setTimeout(() => {
+                    const damage = 30 + Math.random() * 40;
+                    game.damageMonster(damage);
+                    
+                    // Massive fire explosion
+                    game.createExplosion(game.selectedMonster.x, game.selectedMonster.y, '#FF4500', 25);
+                    
+                    // Screen shake effect
+                    game.canvas.style.transform = 'translate(' + (Math.random() - 0.5) * 10 + 'px, ' + (Math.random() - 0.5) * 10 + 'px)';
+                    setTimeout(() => {
+                        game.canvas.style.transform = 'translate(0, 0)';
+                    }, 100);
+                }, 200);
+                
+                game.logMessage(`Knight unleashes INFERNAL STRIKE!`, 'cast');
+            }
+        }
     </script>
 </body>
 </html>
